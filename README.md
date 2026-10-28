@@ -1,5 +1,8 @@
 # 豆瓣 IMDb 评分
 
+[![test](https://github.com/manongchopin/imdb-on-douban/actions/workflows/test.yml/badge.svg)](https://github.com/manongchopin/imdb-on-douban/actions/workflows/test.yml)
+[![license](https://img.shields.io/badge/license-MIT-f5c518.svg)](LICENSE)
+
 在豆瓣电影页面右侧，紧挨着「豆瓣评分」显示这部电影的 **IMDb 评分**（以及投票数、烂番茄 / Metacritic，可选）。
 
 ![豆瓣页面效果](docs/preview-card.png)
