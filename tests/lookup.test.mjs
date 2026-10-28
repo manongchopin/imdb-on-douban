@@ -57,6 +57,7 @@ function makeStorage(initial = {}) {
 
 const local = makeStorage();
 let messageListener = null;
+let alarmListener = null;
 const fetchLog = [];
 
 globalThis.chrome = {
@@ -64,6 +65,11 @@ globalThis.chrome = {
     onMessage: { addListener: (fn) => (messageListener = fn) },
     onInstalled: { addListener: () => {} },
     onStartup: { addListener: () => {} },
+  },
+  alarms: {
+    onAlarm: { addListener: (fn) => (alarmListener = fn) },
+    create: () => {},
+    get: async () => undefined,
   },
   action: {
     setBadgeText: async () => {},
@@ -183,4 +189,22 @@ test('TOP250_STATUS 返回内置快照的日期和数量', async () => {
   assert.equal(res.ok, true);
   assert.equal(res.total, 250);
   assert.match(res.updatedAt, /^\d{4}-\d{2}-\d{2}$/);
+});
+
+test('Top 250 定时器会注册，并带有 20 小时节流', async () => {
+  assert.equal(typeof alarmListener, 'function', '应注册 onAlarm 监听');
+
+  alarmListener({ name: 'dbimdb-top250' });
+  await new Promise((r) => setTimeout(r, 80));
+  assert.ok(local.memory['dbimdb:cache:top250:lastAttempt'], '应记录本次尝试时间');
+
+  const before = fetchLog.length;
+  alarmListener({ name: 'dbimdb-top250' });
+  await new Promise((r) => setTimeout(r, 80));
+  assert.equal(fetchLog.length, before, '20 小时内不应再次请求');
+
+  // 不相干的 alarm 不应触发任何事情
+  alarmListener({ name: 'something-else' });
+  await new Promise((r) => setTimeout(r, 30));
+  assert.equal(fetchLog.length, before);
 });

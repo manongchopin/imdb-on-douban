@@ -38,9 +38,16 @@ let top250State = null;
 
 chrome.runtime.onInstalled.addListener(() => {
   pruneCache().catch(() => {});
+  ensureTop250Alarm();
 });
 chrome.runtime.onStartup.addListener(() => {
   pruneCache().catch(() => {});
+  ensureTop250Alarm();
+});
+
+// 每天唤醒一次 Service Worker 去更新 Top 250（浏览器重启后 alarm 会被清掉，所以 startup 里重建）
+chrome.alarms?.onAlarm.addListener((alarm) => {
+  if (alarm && alarm.name === TOP250_ALARM) autoRefreshTop250().catch(() => {});
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -317,7 +324,7 @@ async function getTop250State() {
     updatedAt = live.updatedAt || updatedAt;
   }
 
-  top250State = { map: buildRankIndex(items), total: items.length, updatedAt };
+  top250State = { map: buildRankIndex(items), items, total: items.length, updatedAt };
   return top250State;
 }
 
@@ -361,23 +368,53 @@ async function fetchTop250FromArchive() {
 }
 
 async function refreshTop250() {
+  const previous = await getTop250State();
+
   for (const attempt of [fetchTop250FromImdb, fetchTop250FromArchive]) {
     try {
       const items = await attempt();
       if (!items || !isValidTop250(items)) continue;
 
-      const payload = {
-        items: compact(items),
-        updatedAt: new Date().toISOString().slice(0, 10),
-      };
-      await setCache('top250:live', payload, 30 * 24 * 60 * 60 * 1000);
-      top250State = null;
-      return { ok: true, total: payload.items.length, updatedAt: payload.updatedAt };
+      const next = compact(items);
+      const changed = JSON.stringify(next) !== JSON.stringify(previous.items);
+      const updatedAt = changed ? new Date().toISOString().slice(0, 10) : previous.updatedAt;
+
+      // 名次没变就不写 storage，避免每天无意义地改日期
+      if (changed) {
+        await setCache('top250:live', { items: next, updatedAt }, 30 * 24 * 60 * 60 * 1000);
+        top250State = null;
+      }
+      return { ok: true, total: next.length, updatedAt, changed };
     } catch {
       /* 换下一个数据源 */
     }
   }
   return { ok: false, code: 'TOP250_FAILED', message: '两个数据源都没取到榜单，稍后再试' };
+}
+
+// ---------------------------------------------------------------------------
+// 定时刷新
+// ---------------------------------------------------------------------------
+
+const TOP250_ALARM = 'dbimdb-top250';
+const TOP250_MIN_INTERVAL = 20 * 60 * 60 * 1000; // 最快 20 小时一次
+
+function ensureTop250Alarm() {
+  if (!chrome.alarms) return;
+  chrome.alarms.create(TOP250_ALARM, { delayInMinutes: 2, periodInMinutes: 24 * 60 });
+}
+
+/** 有节流地自动更新：失败也不会反复重试。 */
+async function autoRefreshTop250() {
+  const last = await getCache('top250:lastAttempt');
+  const now = Date.now();
+  if (last && now - last < TOP250_MIN_INTERVAL) return;
+
+  await setCache('top250:lastAttempt', now, 7 * 24 * 60 * 60 * 1000);
+  const result = await refreshTop250();
+  if (result.ok) {
+    console.info(`[豆瓣 IMDb] Top 250 自动更新完成：${result.updatedAt}${result.changed ? '（有变化）' : '（无变化）'}`);
+  }
 }
 
 // ---------------------------------------------------------------------------

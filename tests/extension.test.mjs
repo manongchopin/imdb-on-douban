@@ -10,7 +10,7 @@ const manifest = JSON.parse(readFileSync(join(root, 'manifest.json'), 'utf8'));
 test('manifest 是 MV3，且权限收敛', () => {
   assert.equal(manifest.manifest_version, 3);
   assert.ok(manifest.name && manifest.version && manifest.description);
-  assert.deepEqual([...manifest.permissions].sort(), ['activeTab', 'storage']);
+  assert.deepEqual([...manifest.permissions].sort(), ['activeTab', 'alarms', 'storage']);
   assert.equal(manifest.background.type, 'module');
   assert.ok(manifest.background.service_worker.endsWith('.js'));
 });

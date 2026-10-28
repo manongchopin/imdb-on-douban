@@ -8,9 +8,9 @@
  * 之所以要有快照：IMDb 的榜单页有 AWS WAF，扩展在运行时不一定抓得到；
  * 内置一份快照才能做到「打开页面立刻显示名次」。
  */
-import { writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { parseChartHtml, compact, isValidTop250 } from '../src/lib/top250.js';
 
@@ -87,6 +87,19 @@ const payload = {
   total: result.items.length,
   items: compact(result.items),
 };
+
+// 名次没变化就不动文件，免得每周产生一个空提交
+if (existsSync(OUT)) {
+  try {
+    const current = await import(`${pathToFileURL(OUT).href}?v=${Date.now()}`);
+    if (JSON.stringify(current.TOP250.items) === JSON.stringify(payload.items)) {
+      console.log('✓ 榜单和现有文件一致，保持不动。');
+      process.exit(0);
+    }
+  } catch {
+    /* 读不出来就照常覆盖 */
+  }
+}
 
 const body = `/**
  * IMDb Top 250 内置快照 —— 由 tools/update-top250.mjs 生成，请勿手改。
