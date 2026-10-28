@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>豆瓣 IMDb 评分</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="head">
+        <span class="logo">IMDb</span>
+        <div class="titles">
+          <h1>豆瓣 IMDb 评分</h1>
+          <p class="ver">v1.0.0</p>
+        </div>
+        <label class="switch" title="启用 / 关闭">
+          <input type="checkbox" id="enabled" />
+          <span class="track"></span>
+        </label>
+      </header>
+
+      <section class="status" id="status" data-tone="idle">
+        <div class="status-main" id="statusMain">读取中…</div>
+        <div class="status-sub" id="statusSub"></div>
+      </section>
+
+      <section class="field">
+        <div class="label-row">
+          <label for="apiKey">OMDb API Key</label>
+          <a href="https://www.omdbapi.com/apikey.aspx" target="_blank" rel="noopener noreferrer">免费申请 →</a>
+        </div>
+        <div class="row">
+          <input
+            id="apiKey"
+            type="text"
+            placeholder="粘贴 8 位 Key"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button id="saveKey" class="primary">保存</button>
+        </div>
+        <p class="msg" id="keyMsg" hidden></p>
+        <p class="hint">Key 只存在你的浏览器里，每天 1000 次额度，够日常用。</p>
+      </section>
+
+      <section class="opts">
+        <label class="check"><input type="checkbox" id="showVotes" /> 显示投票人数</label>
+        <label class="check"><input type="checkbox" id="showExtra" /> 显示烂番茄 / Metacritic</label>
+      </section>
+
+      <section class="actions">
+        <button id="refresh">刷新卡片</button>
+        <button id="clearCache">清除缓存</button>
+      </section>
+
+      <footer class="foot">数据来源 OMDb API · 仅供个人学习使用</footer>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>

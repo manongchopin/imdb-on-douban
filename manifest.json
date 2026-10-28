@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "豆瓣 IMDb 评分",
+  "short_name": "Douban IMDb",
+  "version": "1.0.0",
+  "description": "在豆瓣电影页面直接显示 IMDb 评分与投票数，可选显示烂番茄、Metacritic 评分。",
+  "minimum_chrome_version": "109",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "豆瓣 IMDb 评分",
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": [
+    "https://www.omdbapi.com/*",
+    "https://www.imdb.com/*",
+    "https://api.graphql.imdb.com/*",
+    "https://v3.sg.media-imdb.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://movie.douban.com/subject/*",
+        "http://movie.douban.com/subject/*"
+      ],
+      "js": ["src/content/content.js"],
+      "css": ["src/content/content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

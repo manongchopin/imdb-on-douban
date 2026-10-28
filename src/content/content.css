@@ -1,0 +1,252 @@
+/* 豆瓣 IMDb 评分卡片 —— 风格尽量贴近豆瓣右侧栏的既有卡片 */
+
+#dbimdb-card {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 12px 0;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid #ececec;
+  border-radius: 4px;
+  color: #333;
+  font: 13px/1.6 -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+  text-align: left;
+  overflow: hidden;
+}
+
+#dbimdb-card * {
+  box-sizing: border-box;
+}
+
+#dbimdb-card .dbimdb-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 26px;
+}
+
+#dbimdb-card .dbimdb-logo {
+  flex: none;
+  padding: 1px 5px;
+  background: #f5c518;
+  border-radius: 3px;
+  color: #000;
+  font: 800 11px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  letter-spacing: 0.3px;
+}
+
+#dbimdb-card .dbimdb-score {
+  font: 700 26px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #111;
+  letter-spacing: -0.5px;
+}
+
+#dbimdb-card .dbimdb-votes {
+  color: #999;
+  font-size: 12px;
+  padding-top: 4px;
+}
+
+#dbimdb-card .dbimdb-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111;
+}
+
+#dbimdb-card .dbimdb-jump {
+  margin-left: auto;
+  padding-top: 2px;
+  color: #37a;
+  font-size: 14px;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+#dbimdb-card .dbimdb-jump:hover {
+  color: #14b866;
+}
+
+#dbimdb-card .dbimdb-extras {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 9px;
+  border-top: 1px dashed #efefef;
+}
+
+#dbimdb-card .dbimdb-chip {
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: #f7f7f7;
+  color: #555;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+#dbimdb-card .dbimdb-src {
+  margin-left: auto;
+  color: #c4c4c4;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+#dbimdb-card .dbimdb-src-alone {
+  margin: 8px 0 0;
+  text-align: right;
+}
+
+#dbimdb-card .dbimdb-sub {
+  margin-top: 4px;
+  color: #888;
+  font-size: 12px;
+}
+
+#dbimdb-card .dbimdb-desc {
+  margin: 8px 0 0;
+  color: #666;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+#dbimdb-card .dbimdb-desc a,
+#dbimdb-card .dbimdb-steps a {
+  color: #37a;
+  text-decoration: none;
+}
+
+#dbimdb-card .dbimdb-desc a:hover,
+#dbimdb-card .dbimdb-steps a:hover {
+  text-decoration: underline;
+}
+
+#dbimdb-card .dbimdb-steps {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: #666;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+#dbimdb-card .dbimdb-form {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+#dbimdb-card .dbimdb-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  background: #fff;
+  color: #333;
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+#dbimdb-card .dbimdb-input:focus {
+  border-color: #f5c518;
+}
+
+#dbimdb-card .dbimdb-btn {
+  flex: none;
+  height: 30px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 3px;
+  background: #f5c518;
+  color: #111;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+#dbimdb-card .dbimdb-btn:hover {
+  filter: brightness(0.94);
+}
+
+#dbimdb-card .dbimdb-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+#dbimdb-card .dbimdb-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  border: 1px solid #e2e2e2;
+  background: #fff;
+  color: #555;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+#dbimdb-card .dbimdb-btn-ghost:hover {
+  border-color: #ccc;
+  filter: none;
+}
+
+#dbimdb-card .dbimdb-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+#dbimdb-card .dbimdb-feedback {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+#dbimdb-card .dbimdb-feedback[data-tone="error"] {
+  color: #d33;
+}
+
+#dbimdb-card .dbimdb-feedback[data-tone="ok"] {
+  color: #14a05a;
+}
+
+#dbimdb-card .dbimdb-feedback[data-tone="info"] {
+  color: #888;
+}
+
+/* 骨架屏 */
+#dbimdb-card .dbimdb-skeleton {
+  display: inline-block;
+  height: 12px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #f7f7f7 37%, #f0f0f0 63%);
+  background-size: 400% 100%;
+  animation: dbimdb-shimmer 1.4s ease infinite;
+}
+
+#dbimdb-card .dbimdb-skeleton-score {
+  width: 46px;
+  height: 22px;
+}
+
+#dbimdb-card .dbimdb-skeleton-text {
+  width: 86px;
+}
+
+@keyframes dbimdb-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #dbimdb-card .dbimdb-skeleton {
+    animation: none;
+  }
+}

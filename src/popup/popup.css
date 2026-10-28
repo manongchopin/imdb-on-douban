@@ -1,0 +1,298 @@
+:root {
+  --yellow: #f5c518;
+  --ink: #1a1a1a;
+  --muted: #8a8a8a;
+  --line: #ededed;
+  --blue: #37a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 320px;
+  margin: 0;
+  background: #fff;
+  color: var(--ink);
+  font: 13px/1.5 -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+}
+
+.wrap {
+  padding: 14px 16px 12px;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.logo {
+  flex: none;
+  padding: 2px 6px;
+  background: var(--yellow);
+  border-radius: 3px;
+  font: 800 12px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  letter-spacing: 0.3px;
+}
+
+.titles {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.titles h1 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ver {
+  margin: 1px 0 0;
+  color: #bdbdbd;
+  font-size: 11px;
+}
+
+/* 开关 */
+.switch {
+  position: relative;
+  flex: none;
+  width: 34px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.switch input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+
+.switch .track {
+  position: absolute;
+  inset: 0;
+  background: #dcdcdc;
+  border-radius: 10px;
+  transition: background 0.18s ease;
+}
+
+.switch .track::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: transform 0.18s ease;
+}
+
+.switch input:checked + .track {
+  background: var(--yellow);
+}
+
+.switch input:checked + .track::after {
+  transform: translateX(14px);
+}
+
+.switch input:focus-visible + .track {
+  outline: 2px solid #9ecbff;
+  outline-offset: 2px;
+}
+
+/* 状态卡 */
+.status {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fafafa;
+}
+
+.status[data-tone="ok"] {
+  background: #fffdf2;
+  border-color: #f3e6b0;
+}
+
+.status[data-tone="warn"] {
+  background: #fff8f8;
+  border-color: #f2dede;
+}
+
+.status-main {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.status-sub {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.status-sub:empty {
+  display: none;
+}
+
+/* 表单 */
+.field {
+  margin-top: 14px;
+}
+
+.label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.label-row label {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.label-row a {
+  color: var(--blue);
+  font-size: 11.5px;
+  text-decoration: none;
+}
+
+.label-row a:hover {
+  text-decoration: underline;
+}
+
+.row {
+  display: flex;
+  gap: 6px;
+}
+
+input[type="text"] {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: var(--ink);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+input[type="text"]:focus {
+  border-color: var(--yellow);
+}
+
+button {
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #fff;
+  color: #555;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+button:hover {
+  background: #fafafa;
+  border-color: #ddd;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+button.primary {
+  flex: none;
+  border-color: transparent;
+  background: var(--yellow);
+  color: #111;
+  font-weight: 600;
+}
+
+button.primary:hover {
+  filter: brightness(0.95);
+}
+
+.hint {
+  margin: 6px 0 0;
+  color: #a8a8a8;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.msg {
+  margin: 6px 0 0;
+  font-size: 11.5px;
+}
+
+.msg[data-tone="error"] {
+  color: #d33;
+}
+
+.msg[data-tone="ok"] {
+  color: #14a05a;
+}
+
+.msg[data-tone="info"] {
+  color: var(--muted);
+}
+
+/* 选项 */
+.opts {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #444;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.check input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: #d9ac00;
+  cursor: pointer;
+}
+
+/* 操作 */
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.actions button {
+  flex: 1 1 0;
+}
+
+.foot {
+  margin-top: 12px;
+  color: #c0c0c0;
+  font-size: 10.5px;
+  text-align: center;
+}

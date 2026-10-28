@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect x="0" y="0" width="128" height="128" rx="27" fill="#f5c518"/>
+  <text x="64" y="79" text-anchor="middle"
+        font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-size="42" font-weight="700" letter-spacing="-1.6" fill="#111">IMDb</text>
+</svg>

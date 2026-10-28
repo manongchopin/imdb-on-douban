@@ -1,0 +1,91 @@
+/* 预览用的「伪豆瓣」样式，只为让卡片出现在接近真实的上下文里 */
+body {
+  margin: 0;
+  background: #fff;
+  color: #111;
+  font: 13px/1.62 -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+}
+
+#wrapper {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 24px 20px;
+}
+
+.grid-16-8 {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.article {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.aside {
+  flex: 0 0 300px;
+  width: 300px;
+}
+
+h1 {
+  margin: 0 0 18px;
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+h1 .year {
+  color: #999;
+  font-size: 22px;
+}
+
+#info {
+  color: #111;
+  line-height: 1.9;
+}
+
+#info a {
+  color: #37a;
+  text-decoration: none;
+}
+
+#info .pl {
+  color: #999;
+}
+
+#interest_sectl {
+  padding: 14px 16px;
+  border-radius: 4px;
+  background: #f7f7f7;
+}
+
+.rating_logo {
+  color: #999;
+  font-size: 12px;
+}
+
+.rating_self {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 6px 0 2px;
+}
+
+.rating_num {
+  color: #f30;
+  font: 700 28px/1 "Helvetica Neue", Arial, sans-serif;
+}
+
+.rating_people,
+.rating_per {
+  color: #999;
+  font-size: 12px;
+}
+
+.ratings-on-weight {
+  margin-top: 10px;
+  color: #999;
+  font-size: 12px;
+}
