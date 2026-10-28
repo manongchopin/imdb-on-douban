@@ -145,6 +145,36 @@ body {
   display: none;
 }
 
+/* Top 250 一行 */
+.top250-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 11px;
+  color: #a8a8a8;
+}
+
+.link-btn {
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--blue);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.link-btn:hover {
+  background: none;
+  text-decoration: underline;
+}
+
+.link-btn:disabled {
+  color: #c0c0c0;
+  text-decoration: none;
+}
+
 /* 表单 */
 .field {
   margin-top: 14px;

@@ -256,34 +256,39 @@
   function okMarkup() {
     const d = state.data || {};
     const prefs = state.prefs || { showVotes: true, showExtra: true };
-    const votes = d.votes && prefs.showVotes ? `${formatVotes(d.votes)} 人评分` : '';
-    const extras = (d.extras || []).filter((e) => e && e.short);
-    const showExtras = extras.length > 0 && prefs.showExtra !== false;
+    const rank = d.top250 && d.top250.rank ? Number(d.top250.rank) : 0;
     const jump = d.url || state.page?.imdbUrl || '';
+    const votes = d.votes && prefs.showVotes ? `${formatVotes(d.votes)} 人评分` : '';
+    const extras = (d.extras || []).filter((e) => e && e.short && prefs.showExtra !== false);
+
+    const meta = [
+      votes ? `<span class="dbimdb-votes">${escapeHtml(votes)}</span>` : '',
+      ...extras.map(
+        (e) =>
+          `<span class="dbimdb-chip" title="${escapeHtml(e.source)}">${escapeHtml(e.label)} ${escapeHtml(
+            e.short
+          )}</span>`
+      ),
+    ]
+      .filter(Boolean)
+      .join('');
 
     return `
-      <div class="dbimdb-head">
+      <div class="dbimdb-head" title="评分数据来源：${escapeHtml(d.source || 'OMDb')}">
         <span class="dbimdb-logo">IMDb</span>
         <span class="dbimdb-score">${escapeHtml(formatRating(d.rating))}</span>
-        ${votes ? `<span class="dbimdb-votes">${escapeHtml(votes)}</span>` : ''}
+        ${
+          rank
+            ? `<a class="dbimdb-top250" href="https://www.imdb.com/chart/top/" target="_blank" rel="noopener noreferrer" title="IMDb Top 250 第 ${rank} 名">TOP 250 #${rank}</a>`
+            : ''
+        }
         ${
           jump
             ? `<a class="dbimdb-jump" href="${escapeHtml(jump)}" target="_blank" rel="noopener noreferrer" title="在 IMDb 查看">↗</a>`
             : ''
         }
       </div>
-      ${
-        showExtras
-          ? `<div class="dbimdb-extras">${extras
-              .map(
-                (e) =>
-                  `<span class="dbimdb-chip" title="${escapeHtml(e.source)}">${escapeHtml(e.label)} ${escapeHtml(
-                    e.short
-                  )}</span>`
-              )
-              .join('')}<span class="dbimdb-src">${escapeHtml(d.source || 'OMDb')}</span></div>`
-          : `<div class="dbimdb-src dbimdb-src-alone">${escapeHtml(d.source || 'OMDb')}</div>`
-      }`;
+      ${meta ? `<div class="dbimdb-meta">${meta}</div>` : ''}`;
   }
 
   function needKeyMarkup() {

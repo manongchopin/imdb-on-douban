@@ -1,11 +1,12 @@
 {
   "name": "douban-imdb-rating",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "在豆瓣电影页面显示 IMDb 评分的 Chrome 扩展（无需打包）",
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "icons": "node tools/make-icons.mjs"
+    "icons": "node tools/make-icons.mjs",
+    "top250": "node tools/update-top250.mjs"
   }
 }

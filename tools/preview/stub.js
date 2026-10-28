@@ -36,6 +36,7 @@
           { source: 'Metacritic', label: 'Metacritic', short: '82' },
         ],
         source: 'OMDb',
+        top250: { rank: 1, total: 250, updatedAt: '2026-10-28' },
       },
       prefs: { showVotes: true, showExtra: true },
     },

@@ -117,6 +117,7 @@ test('LOOKUP 能从片名走到评分，并写入缓存', async () => {
   assert.equal(res.data.imdbId, 'tt0111161');
   assert.equal(res.data.votes, 3258937);
   assert.equal(res.prefs.showVotes, true);
+  assert.equal(res.data.top250?.rank, 1, '肖申克应该是 Top 250 第 1 名');
   assert.ok(fetchLog.length >= 2, '应该至少请求搜索接口和详情接口');
 });
 
@@ -169,4 +170,17 @@ test('直连失败后写「冷静期」，后续页面不再反复重试', async
   const second = await dispatch({ type: 'LOOKUP', payload: { ...payload, doubanId: '6666666' } });
   assert.equal(second.code, 'DIRECT_BLOCKED');
   assert.equal(fetchLog.length, before, '冷静期内不应再发请求');
+});
+
+test('REFRESH_TOP250 在两个数据源都拿不到时返回失败码', async () => {
+  const res = await dispatch({ type: 'REFRESH_TOP250' });
+  assert.equal(res.ok, false);
+  assert.equal(res.code, 'TOP250_FAILED');
+});
+
+test('TOP250_STATUS 返回内置快照的日期和数量', async () => {
+  const res = await dispatch({ type: 'TOP250_STATUS' });
+  assert.equal(res.ok, true);
+  assert.equal(res.total, 250);
+  assert.match(res.updatedAt, /^\d{4}-\d{2}-\d{2}$/);
 });

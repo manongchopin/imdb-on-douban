@@ -14,6 +14,7 @@ async function init() {
 
   currentTab = await getActiveTab();
   await renderStatus(settings);
+  await renderTop250Date();
 }
 
 function bindEvents() {
@@ -30,6 +31,30 @@ function bindEvents() {
       if (id === 'enabled') await renderStatus(await fetchSettings());
     });
   }
+
+  $('refreshTop250').addEventListener('click', async () => {
+    const btn = $('refreshTop250');
+    const date = $('top250Date');
+    btn.disabled = true;
+    btn.textContent = '更新中';
+    date.textContent = '…';
+    try {
+      const res = await send({ type: 'REFRESH_TOP250' });
+      if (res && res.ok) {
+        btn.textContent = `已更新 ${res.total} 条`;
+        await renderTop250Date();
+        await renderStatus(await fetchSettings());
+      } else {
+        btn.textContent = '更新失败';
+        await renderTop250Date();
+      }
+    } finally {
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = '更新';
+      }, 2200);
+    }
+  });
 
   $('refresh').addEventListener('click', async () => {
     const btn = $('refresh');
@@ -159,9 +184,9 @@ async function renderStatus(settings) {
       const d = state.data || {};
       box.dataset.tone = 'ok';
       main.textContent = `IMDb ${Number(d.rating).toFixed(1)}`;
-      sub.textContent = [title, d.votes ? `${formatVotes(d.votes)} 人评分` : '']
-        .filter(Boolean)
-        .join(' · ');
+      const parts = [title, d.votes ? `${formatVotes(d.votes)} 人评分` : ''];
+      if (d.top250 && d.top250.rank) parts.push(`Top 250 #${d.top250.rank}`);
+      sub.textContent = parts.filter(Boolean).join(' · ');
       break;
     }
     case 'loading':
@@ -196,6 +221,11 @@ function applySettings(settings) {
   $('apiKey').value = settings.apiKey || '';
   $('showVotes').checked = !!settings.showVotes;
   $('showExtra').checked = !!settings.showExtra;
+}
+
+async function renderTop250Date() {
+  const res = await send({ type: 'TOP250_STATUS' });
+  $('top250Date').textContent = (res && res.updatedAt) || '—';
 }
 
 async function fetchSettings() {

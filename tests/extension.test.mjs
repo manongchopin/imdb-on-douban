@@ -37,7 +37,7 @@ test('manifest 引用的文件全部存在', () => {
 
 test('host_permissions 覆盖所有会用到的域名', () => {
   const hosts = manifest.host_permissions.join(' ');
-  for (const domain of ['omdbapi.com', 'imdb.com', 'api.graphql.imdb.com', 'v3.sg.media-imdb.com']) {
+  for (const domain of ['omdbapi.com', 'imdb.com', 'api.graphql.imdb.com', 'v3.sg.media-imdb.com', 'web.archive.org']) {
     assert.ok(hosts.includes(domain), `缺少 ${domain} 的 host 权限`);
   }
 });

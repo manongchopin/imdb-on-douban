@@ -23,6 +23,8 @@ import {
 } from './lib/omdb.js';
 import { candidateImdbId, pickBest } from './lib/match.js';
 import { fetchDirectRating, parseSuggestion, IMDB_SUGGEST } from './lib/imdb-direct.js';
+import { TOP250 } from '../data/top250.js';
+import { buildRankIndex, compact, isValidTop250, parseChartHtml } from './lib/top250.js';
 
 const TTL_RATING = 7 * 24 * 60 * 60 * 1000;
 const TTL_MAP = 30 * 24 * 60 * 60 * 1000;
@@ -30,6 +32,9 @@ const TTL_DIRECT = 24 * 60 * 60 * 1000;
 
 /** 同一部片的并发请求合并，避免页面重绘时重复打 API。 */
 const inflight = new Map();
+
+/** Top 250 索引（内存缓存，刷新后置空重新读）。 */
+let top250State = null;
 
 chrome.runtime.onInstalled.addListener(() => {
   pruneCache().catch(() => {});
@@ -59,6 +64,12 @@ async function handleMessage(message, sender) {
       return { ok: true, settings: await getSettings() };
     case 'SAVE_SETTINGS':
       return { ok: true, settings: await saveSettings(message.patch || {}) };
+    case 'REFRESH_TOP250':
+      return refreshTop250();
+    case 'TOP250_STATUS': {
+      const state = await getTop250State();
+      return { ok: true, total: state.total, updatedAt: state.updatedAt };
+    }
     case 'CLEAR_CACHE': {
       const removed = await clearCache();
       return { ok: true, removed };
@@ -97,9 +108,11 @@ async function lookup(payload, sender) {
   const key = `${payload.doubanId || payload.titles?.[0] || 'unknown'}|${useOmdb}`;
   if (inflight.has(key)) return inflight.get(key);
 
-  const task = (useOmdb ? lookupViaOmdb(payload, apiKey) : lookupViaDirect(payload)).then((result) => {
+  const task = (useOmdb ? lookupViaOmdb(payload, apiKey) : lookupViaDirect(payload)).then(async (result) => {
     if (result.ok) {
       result.prefs = { showVotes: settings.showVotes, showExtra: settings.showExtra };
+      const ranking = await getTop250Rank(result.data?.imdbId);
+      if (ranking) result.data.top250 = ranking;
     }
     if (sender?.tab?.id != null) updateBadge(sender.tab.id, result);
     return result;
@@ -282,6 +295,89 @@ async function resolveViaSuggestion(payload) {
     }
   }
   return null;
+}
+
+// ---------------------------------------------------------------------------
+// IMDb Top 250
+// ---------------------------------------------------------------------------
+
+/**
+ * 名次优先用运行时刷新过的数据（storage），没有就用内置快照。
+ * 内置快照在 data/top250.js，由 tools/update-top250.mjs 生成。
+ */
+async function getTop250State() {
+  if (top250State) return top250State;
+
+  let items = TOP250.items;
+  let updatedAt = TOP250.updatedAt;
+
+  const live = await getCache('top250:live');
+  if (live && Array.isArray(live.items) && live.items.length) {
+    items = live.items;
+    updatedAt = live.updatedAt || updatedAt;
+  }
+
+  top250State = { map: buildRankIndex(items), total: items.length, updatedAt };
+  return top250State;
+}
+
+async function getTop250Rank(imdbId) {
+  if (!imdbId) return null;
+  const state = await getTop250State();
+  const rank = state.map.get(imdbId);
+  if (!rank) return null;
+  return { rank, total: state.total, updatedAt: state.updatedAt };
+}
+
+const TOP250_CDX =
+  'https://web.archive.org/cdx/search/cdx?url=imdb.com/chart/top&output=json&limit=-1&filter=statuscode:200&fl=timestamp';
+
+/** 数据源 1：直连 IMDb 榜单页（浏览器里已通过 WAF 时可用）。 */
+async function fetchTop250FromImdb() {
+  const res = await fetch('https://www.imdb.com/chart/top/', {
+    credentials: 'include',
+    headers: {
+      Accept: 'text/html,application/xhtml+xml',
+      'Accept-Language': 'en-US,en;q=0.9',
+    },
+  });
+  if (!res.ok) throw new Error(`IMDb ${res.status}`);
+  return parseChartHtml(await res.text());
+}
+
+/** 数据源 2：Internet Archive 最近的一份网页快照（通常只差几天）。 */
+async function fetchTop250FromArchive() {
+  const cdx = await fetch(TOP250_CDX, { headers: { Accept: 'application/json' } });
+  if (!cdx.ok) throw new Error(`CDX ${cdx.status}`);
+  const rows = await cdx.json();
+  const timestamp = rows?.[1]?.[0];
+  if (!timestamp) throw new Error('没有可用快照');
+
+  const res = await fetch(
+    `https://web.archive.org/web/${timestamp}id_/https://www.imdb.com/chart/top/`
+  );
+  if (!res.ok) throw new Error(`快照 ${res.status}`);
+  return parseChartHtml(await res.text());
+}
+
+async function refreshTop250() {
+  for (const attempt of [fetchTop250FromImdb, fetchTop250FromArchive]) {
+    try {
+      const items = await attempt();
+      if (!items || !isValidTop250(items)) continue;
+
+      const payload = {
+        items: compact(items),
+        updatedAt: new Date().toISOString().slice(0, 10),
+      };
+      await setCache('top250:live', payload, 30 * 24 * 60 * 60 * 1000);
+      top250State = null;
+      return { ok: true, total: payload.items.length, updatedAt: payload.updatedAt };
+    } catch {
+      /* 换下一个数据源 */
+    }
+  }
+  return { ok: false, code: 'TOP250_FAILED', message: '两个数据源都没取到榜单，稍后再试' };
 }
 
 // ---------------------------------------------------------------------------

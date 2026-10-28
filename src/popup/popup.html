@@ -11,7 +11,7 @@
         <span class="logo">IMDb</span>
         <div class="titles">
           <h1>豆瓣 IMDb 评分</h1>
-          <p class="ver">v1.0.0</p>
+          <p class="ver">v1.1.0</p>
         </div>
         <label class="switch" title="启用 / 关闭">
           <input type="checkbox" id="enabled" />
@@ -23,6 +23,11 @@
         <div class="status-main" id="statusMain">读取中…</div>
         <div class="status-sub" id="statusSub"></div>
       </section>
+
+      <div class="top250-row">
+        <span class="dim">Top 250 数据：<span id="top250Date">—</span></span>
+        <button id="refreshTop250" class="link-btn" type="button">更新</button>
+      </div>
 
       <section class="field">
         <div class="label-row">

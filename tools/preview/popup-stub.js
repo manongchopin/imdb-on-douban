@@ -3,7 +3,12 @@
   const SETTINGS = { enabled: true, apiKey: 'a1b2c3d4', provider: 'auto', showVotes: true, showExtra: true };
   const TAB_STATE = {
     status: 'ok',
-    data: { imdbId: 'tt0111161', rating: 9.3, votes: 3258937 },
+    data: {
+      imdbId: 'tt0111161',
+      rating: 9.3,
+      votes: 3258937,
+      top250: { rank: 1, total: 250, updatedAt: '2026-10-28' },
+    },
     message: '',
     page: { title: '肖申克的救赎 The Shawshank Redemption', year: '1994', imdbId: 'tt0111161' },
   };
@@ -18,6 +23,8 @@
         if (message?.type === 'SAVE_SETTINGS') Object.assign(SETTINGS, message.patch);
         if (message?.type === 'TEST_KEY') response = { ok: true, title: 'The Shawshank Redemption', rating: 9.3 };
         if (message?.type === 'CLEAR_CACHE') response = { ok: true, removed: 7 };
+        if (message?.type === 'TOP250_STATUS') response = { ok: true, total: 250, updatedAt: '2026-10-28' };
+        if (message?.type === 'REFRESH_TOP250') response = { ok: true, total: 250, updatedAt: '2026-10-28' };
         setTimeout(() => callback(response), 60);
       },
     },
