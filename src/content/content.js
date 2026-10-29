@@ -256,7 +256,12 @@
   function okMarkup() {
     const d = state.data || {};
     const prefs = state.prefs || { showVotes: true, showExtra: true };
-    const rank = d.top250 && d.top250.rank ? Number(d.top250.rank) : 0;
+    const top = d.top250 && d.top250.rank ? d.top250 : null;
+    const rank = top ? Number(top.rank) : 0;
+    const isTv = !!top && top.chart === 'tv';
+    const chartUrl = isTv
+      ? 'https://www.imdb.com/chart/toptv/'
+      : 'https://www.imdb.com/chart/top/';
     const jump = d.url || state.page?.imdbUrl || '';
     const votes = d.votes && prefs.showVotes ? `${formatVotes(d.votes)} 人评分` : '';
     const extras = (d.extras || []).filter((e) => e && e.short && prefs.showExtra !== false);
@@ -279,7 +284,9 @@
         <span class="dbimdb-score">${escapeHtml(formatRating(d.rating))}</span>
         ${
           rank
-            ? `<a class="dbimdb-top250" href="https://www.imdb.com/chart/top/" target="_blank" rel="noopener noreferrer" title="IMDb Top 250 第 ${rank} 名">TOP 250 #${rank}</a>`
+            ? `<a class="dbimdb-top250" href="${chartUrl}" target="_blank" rel="noopener noreferrer" title="${
+                isTv ? 'IMDb Top 250 TV' : 'IMDb Top 250'
+              } 第 ${rank} 名">${isTv ? 'TOP 250 TV' : 'TOP 250'} #${rank}</a>`
             : ''
         }
         ${

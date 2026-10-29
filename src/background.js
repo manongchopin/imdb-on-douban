@@ -24,6 +24,7 @@ import {
 import { candidateImdbId, pickBest } from './lib/match.js';
 import { fetchDirectRating, parseSuggestion, IMDB_SUGGEST } from './lib/imdb-direct.js';
 import { TOP250 } from '../data/top250.js';
+import { TOP250_TV } from '../data/top250-tv.js';
 import { buildRankIndex, compact, isValidTop250, parseChartHtml } from './lib/top250.js';
 
 const TTL_RATING = 7 * 24 * 60 * 60 * 1000;
@@ -74,8 +75,13 @@ async function handleMessage(message, sender) {
     case 'REFRESH_TOP250':
       return refreshTop250();
     case 'TOP250_STATUS': {
-      const state = await getTop250State();
-      return { ok: true, total: state.total, updatedAt: state.updatedAt };
+      const movie = await getChartState('movie');
+      const tv = await getChartState('tv');
+      return {
+        ok: true,
+        movie: { total: movie.total, updatedAt: movie.updatedAt },
+        tv: { total: tv.total, updatedAt: tv.updatedAt },
+      };
     }
     case 'CLEAR_CACHE': {
       const removed = await clearCache();
@@ -118,7 +124,7 @@ async function lookup(payload, sender) {
   const task = (useOmdb ? lookupViaOmdb(payload, apiKey) : lookupViaDirect(payload)).then(async (result) => {
     if (result.ok) {
       result.prefs = { showVotes: settings.showVotes, showExtra: settings.showExtra };
-      const ranking = await getTop250Rank(result.data?.imdbId);
+      const ranking = await getTop250Rank(result.data?.imdbId, result.data?.type || payload.kind);
       if (ranking) result.data.top250 = ranking;
     }
     if (sender?.tab?.id != null) updateBadge(sender.tab.id, result);
@@ -305,43 +311,60 @@ async function resolveViaSuggestion(payload) {
 }
 
 // ---------------------------------------------------------------------------
-// IMDb Top 250
+// IMDb Top 250（电影榜 + 剧集榜）
 // ---------------------------------------------------------------------------
 
-/**
- * 名次优先用运行时刷新过的数据（storage），没有就用内置快照。
- * 内置快照在 data/top250.js，由 tools/update-top250.mjs 生成。
- */
-async function getTop250State() {
-  if (top250State) return top250State;
+const CHARTS = {
+  movie: { url: 'https://www.imdb.com/chart/top/', bundled: TOP250 },
+  tv: { url: 'https://www.imdb.com/chart/toptv/', bundled: TOP250_TV },
+};
 
-  let items = TOP250.items;
-  let updatedAt = TOP250.updatedAt;
+const chartStates = new Map();
 
+/** 运行时刷新过的数据优先，没有就用内置快照。 */
+async function readLiveCharts() {
   const live = await getCache('top250:live');
-  if (live && Array.isArray(live.items) && live.items.length) {
-    items = live.items;
-    updatedAt = live.updatedAt || updatedAt;
+  if (!live || typeof live !== 'object') return {};
+  // 兼容 1.2.0 的旧格式：{ items, updatedAt }，那时只有电影榜
+  if (Array.isArray(live.items)) {
+    return { movie: { items: live.items, updatedAt: live.updatedAt } };
+  }
+  return live;
+}
+
+async function getChartState(chart) {
+  if (chartStates.has(chart)) return chartStates.get(chart);
+
+  const cfg = CHARTS[chart];
+  let items = cfg.bundled.items;
+  let updatedAt = cfg.bundled.updatedAt;
+
+  const entry = (await readLiveCharts())[chart];
+  if (entry && Array.isArray(entry.items) && entry.items.length) {
+    items = entry.items;
+    updatedAt = entry.updatedAt || updatedAt;
   }
 
-  top250State = { map: buildRankIndex(items), items, total: items.length, updatedAt };
-  return top250State;
+  const state = { chart, map: buildRankIndex(items), items, total: items.length, updatedAt };
+  chartStates.set(chart, state);
+  return state;
 }
 
-async function getTop250Rank(imdbId) {
+/** 先查对应类型的榜，再兜底查另一个（豆瓣偶尔把剧标成电影）。 */
+async function getTop250Rank(imdbId, kind) {
   if (!imdbId) return null;
-  const state = await getTop250State();
-  const rank = state.map.get(imdbId);
-  if (!rank) return null;
-  return { rank, total: state.total, updatedAt: state.updatedAt };
+  const order = kind === 'series' ? ['tv', 'movie'] : ['movie', 'tv'];
+  for (const chart of order) {
+    const state = await getChartState(chart);
+    const rank = state.map.get(imdbId);
+    if (rank) return { rank, chart, total: state.total, updatedAt: state.updatedAt };
+  }
+  return null;
 }
 
-const TOP250_CDX =
-  'https://web.archive.org/cdx/search/cdx?url=imdb.com/chart/top&output=json&limit=-1&filter=statuscode:200&fl=timestamp';
-
-/** 数据源 1：直连 IMDb 榜单页（浏览器里已通过 WAF 时可用）。 */
-async function fetchTop250FromImdb() {
-  const res = await fetch('https://www.imdb.com/chart/top/', {
+/** 数据源 1：直连 IMDb 榜单页（浏览器已通过 WAF 时可用）。 */
+async function fetchChartFromImdb(url) {
+  const res = await fetch(url, {
     credentials: 'include',
     headers: {
       Accept: 'text/html,application/xhtml+xml',
@@ -352,44 +375,68 @@ async function fetchTop250FromImdb() {
   return parseChartHtml(await res.text());
 }
 
-/** 数据源 2：Internet Archive 最近的一份网页快照（通常只差几天）。 */
-async function fetchTop250FromArchive() {
-  const cdx = await fetch(TOP250_CDX, { headers: { Accept: 'application/json' } });
+/** 数据源 2：Internet Archive 最近一份网页快照。 */
+async function fetchChartFromArchive(url) {
+  const key = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  const cdx = await fetch(
+    `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(key)}&output=json&limit=-1&filter=statuscode:200&fl=timestamp`,
+    { headers: { Accept: 'application/json' } }
+  );
   if (!cdx.ok) throw new Error(`CDX ${cdx.status}`);
   const rows = await cdx.json();
   const timestamp = rows?.[1]?.[0];
   if (!timestamp) throw new Error('没有可用快照');
 
-  const res = await fetch(
-    `https://web.archive.org/web/${timestamp}id_/https://www.imdb.com/chart/top/`
-  );
+  const res = await fetch(`https://web.archive.org/web/${timestamp}id_/${url}`);
   if (!res.ok) throw new Error(`快照 ${res.status}`);
   return parseChartHtml(await res.text());
 }
 
 async function refreshTop250() {
-  const previous = await getTop250State();
+  const live = await readLiveCharts();
+  const charts = {};
+  let anySuccess = false;
 
-  for (const attempt of [fetchTop250FromImdb, fetchTop250FromArchive]) {
-    try {
-      const items = await attempt();
-      if (!items || !isValidTop250(items)) continue;
+  for (const chart of Object.keys(CHARTS)) {
+    const previous = await getChartState(chart);
 
-      const next = compact(items);
-      const changed = JSON.stringify(next) !== JSON.stringify(previous.items);
-      const updatedAt = changed ? new Date().toISOString().slice(0, 10) : previous.updatedAt;
-
-      // 名次没变就不写 storage，避免每天无意义地改日期
-      if (changed) {
-        await setCache('top250:live', { items: next, updatedAt }, 30 * 24 * 60 * 60 * 1000);
-        top250State = null;
+    let items = null;
+    for (const fn of [fetchChartFromImdb, fetchChartFromArchive]) {
+      try {
+        const parsed = await fn(CHARTS[chart].url);
+        if (parsed && isValidTop250(parsed)) {
+          items = parsed;
+          break;
+        }
+      } catch {
+        /* 换下一个数据源 */
       }
-      return { ok: true, total: next.length, updatedAt, changed };
-    } catch {
-      /* 换下一个数据源 */
     }
+
+    if (!items) {
+      charts[chart] = { ok: false, total: previous.total, updatedAt: previous.updatedAt };
+      continue;
+    }
+
+    const next = compact(items);
+    const changed = JSON.stringify(next) !== JSON.stringify(previous.items);
+    const updatedAt = changed ? new Date().toISOString().slice(0, 10) : previous.updatedAt;
+
+    // 名次没变就不写 storage，避免每天无意义地改日期
+    if (changed) {
+      live[chart] = { items: next, updatedAt };
+      chartStates.delete(chart);
+    }
+
+    charts[chart] = { ok: true, changed, total: next.length, updatedAt };
+    anySuccess = true;
   }
-  return { ok: false, code: 'TOP250_FAILED', message: '两个数据源都没取到榜单，稍后再试' };
+
+  if (anySuccess) await setCache('top250:live', live, 30 * 24 * 60 * 60 * 1000);
+  if (!anySuccess) {
+    return { ok: false, code: 'TOP250_FAILED', message: '两个榜都没取到，稍后再试' };
+  }
+  return { ok: true, charts };
 }
 
 // ---------------------------------------------------------------------------
@@ -413,7 +460,10 @@ async function autoRefreshTop250() {
   await setCache('top250:lastAttempt', now, 7 * 24 * 60 * 60 * 1000);
   const result = await refreshTop250();
   if (result.ok) {
-    console.info(`[豆瓣 IMDb] Top 250 自动更新完成：${result.updatedAt}${result.changed ? '（有变化）' : '（无变化）'}`);
+    const summary = Object.entries(result.charts)
+      .map(([k, v]) => `${k}:${v.ok ? (v.changed ? '有变化' : '无变化') : '失败'}`)
+      .join(' ');
+    console.info(`[豆瓣 IMDb] Top 250 自动更新完成 ${summary}`);
   }
 }
 

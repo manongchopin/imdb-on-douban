@@ -41,7 +41,7 @@ function bindEvents() {
     try {
       const res = await send({ type: 'REFRESH_TOP250' });
       if (res && res.ok) {
-        btn.textContent = `已更新 ${res.total} 条`;
+        btn.textContent = '已更新';
         await renderTop250Date();
         await renderStatus(await fetchSettings());
       } else {
@@ -185,7 +185,11 @@ async function renderStatus(settings) {
       box.dataset.tone = 'ok';
       main.textContent = `IMDb ${Number(d.rating).toFixed(1)}`;
       const parts = [title, d.votes ? `${formatVotes(d.votes)} 人评分` : ''];
-      if (d.top250 && d.top250.rank) parts.push(`Top 250 #${d.top250.rank}`);
+      if (d.top250 && d.top250.rank) {
+        parts.push(
+          d.top250.chart === 'tv' ? `TV Top 250 #${d.top250.rank}` : `Top 250 #${d.top250.rank}`
+        );
+      }
       sub.textContent = parts.filter(Boolean).join(' · ');
       break;
     }
@@ -225,7 +229,14 @@ function applySettings(settings) {
 
 async function renderTop250Date() {
   const res = await send({ type: 'TOP250_STATUS' });
-  $('top250Date').textContent = (res && res.updatedAt) || '—';
+  if (!res || !res.movie) {
+    $('top250Date').textContent = '—';
+    return;
+  }
+  const short = (value) => (value ? String(value).slice(5) : '—');
+  $('top250Date').textContent = `电影 ${short(res.movie.updatedAt)} · 剧集 ${short(
+    res.tv && res.tv.updatedAt
+  )}`;
 }
 
 async function fetchSettings() {

@@ -3,7 +3,7 @@
 [![test](https://github.com/manongchopin/imdb-on-douban/actions/workflows/test.yml/badge.svg)](https://github.com/manongchopin/imdb-on-douban/actions/workflows/test.yml)
 [![license](https://img.shields.io/badge/license-MIT-f5c518.svg)](LICENSE)
 
-在豆瓣电影页面右侧，紧挨着「豆瓣评分」显示这部电影的 **IMDb 评分**、投票数，以及它有没有进 **IMDb Top 250**（进了就显示 `TOP 250 #1` 这样的名次徽章）。
+在豆瓣电影页面右侧，紧挨着「豆瓣评分」显示这部电影的 **IMDb 评分**、投票数，以及它有没有进 **IMDb Top 250**——电影榜显示 `TOP 250 #1`，剧集榜显示 `TOP 250 TV #1`。
 
 ![豆瓣页面效果](docs/preview-card.png)
 
@@ -85,9 +85,18 @@
 
 ---
 
-## 五、IMDb Top 250 名次
+## 五、IMDb Top 250 名次（电影 + 剧集）
 
-头一行会多一个 `TOP 250 #1` 的徽章（点它跳 IMDb 榜单页），没进榜的片子不显示。
+头一行会多一个名次徽章，点它跳对应的 IMDb 榜单页，没进榜的不显示：
+
+| 页面类型 | 榜单 | 徽章 |
+| --- | --- | --- |
+| 电影 | [Top 250 movies](https://www.imdb.com/chart/top/) | `TOP 250 #1` |
+| 剧集 | [Top 250 TV shows](https://www.imdb.com/chart/toptv/) | `TOP 250 TV #1` |
+
+![剧集页效果](docs/preview-tv.png)
+
+查名次时先按页面类型找对应的榜，没找到再兜底查另一个（豆瓣偶尔把剧集标成电影），所以不会因为类型判断错了就漏掉徽章。
 
 名次有三条来源，优先级从高到低：
 
@@ -95,7 +104,7 @@
 | --- | --- |
 | 每天自动刷新 | 后台用 `chrome.alarms` 每天唤醒一次（最快 20 小时一次），先试 IMDb 榜单页，失败退回 Internet Archive 快照，成功就覆盖内置数据 |
 | 弹窗里的「更新」按钮 | 想立刻刷新的时候，逻辑同上 |
-| `data/top250.js` 内置快照 | 兜底。打开页面立刻有名次，不联网，也不看网络脸色 |
+| `data/top250.js`、`data/top250-tv.js` 内置快照 | 兜底。打开页面立刻有名次，不联网，也不看网络脸色 |
 
 自动刷新失败不会打扰你，只是继续用旧数据；名次没变化时也不会改动日期，避免每天刷新一次"假更新"。
 
@@ -105,7 +114,9 @@
 想手动重建：
 
 ```bash
-node tools/update-top250.mjs           # 直连 IMDb，被拦就自动退回网络存档
+node tools/update-top250.mjs           # 两个榜都更新（直连 IMDb，被拦自动退回网络存档）
+node tools/update-top250.mjs --movie   # 只更新电影榜
+node tools/update-top250.mjs --tv      # 只更新剧集榜
 node tools/update-top250.mjs --wayback # 只用网络存档
 ```
 
@@ -136,7 +147,8 @@ imdb-on-douban/
 ├── .github/workflows/         # test.yml（每次 push 跑测试）+ top250.yml（每周重建榜单）
 ├── manifest.json              # MV3 清单
 ├── data/
-│   └── top250.js              # IMDb Top 250 内置快照（脚本生成，勿手改）
+│   ├── top250.js              # 电影 Top 250 内置快照（脚本生成，勿手改）
+│   └── top250-tv.js           # 剧集 Top 250 内置快照（脚本生成，勿手改）
 ├── src/
 │   ├── background.js          # Service Worker：消息路由 + 请求 + 缓存 + 徽标
 │   ├── lib/
@@ -163,12 +175,12 @@ imdb-on-douban/
 ## 八、开发与测试
 
 ```bash
-npm test          # 45 个用例：片名匹配、OMDb 解析、直连解析、缓存链路、manifest 完整性
+npm test          # 48 个用例：片名匹配、OMDb 解析、直连解析、缓存链路、manifest 完整性
 npm run icons     # 用本机 Chrome + sips 重新生成 4 个尺寸图标
 ```
 
 **无网络集成测试**：`tests/lookup.test.mjs` 用假的 `chrome.*` 和假的 `fetch` 跑通
-「片名 → 搜索 → 挑片 → 取分 → 挂上 Top 250 名次 → 写缓存 → 二次命中缓存」的完整链路，以及直连失败后的
+「片名 → 搜索 → 挑片 → 取分 → 挂上 Top 250 名次（电影/剧集两个榜）→ 写缓存 → 二次命中缓存」的完整链路，以及直连失败后的
 「冷静期」（1 小时内不再重复尝试，避免每开一部片都白等几秒）。
 
 **视觉预览**（不依赖豆瓣在线）：
@@ -191,7 +203,7 @@ node tools/preview/shoot.mjs \
 - **OMDb 免费额度 1000 次/天**：靠缓存 + 去重扛住；如果超了，卡片会提示「额度用完」，第二天自动恢复；
 - **豆瓣改版**：选择器集中在 `content.js` 的 `readPage()` 里，改版了只需要改这一处；
 - **同一部片有多版**（如 1984 / 2021 两版《沙丘》）：靠年份 + 类型区分，年份差 3 年以上不会强行匹配；
-- **Top 250 名次可能滞后几天**：默认用内置快照，点弹窗「更新」可拉最新；榜单尾部名次变化最频繁
+- **两个 Top 250 名次都可能滞后几天**：默认用内置快照，点弹窗「更新」可拉最新；榜单尾部名次变化最频繁
 - **只在 `movie.douban.com/subject/<id>/` 这类主页生效**，`/photos`、`/comments` 等子页面会跳过。
 
 ## 十、隐私

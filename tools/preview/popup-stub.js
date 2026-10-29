@@ -23,8 +23,22 @@
         if (message?.type === 'SAVE_SETTINGS') Object.assign(SETTINGS, message.patch);
         if (message?.type === 'TEST_KEY') response = { ok: true, title: 'The Shawshank Redemption', rating: 9.3 };
         if (message?.type === 'CLEAR_CACHE') response = { ok: true, removed: 7 };
-        if (message?.type === 'TOP250_STATUS') response = { ok: true, total: 250, updatedAt: '2026-10-28' };
-        if (message?.type === 'REFRESH_TOP250') response = { ok: true, total: 250, updatedAt: '2026-10-28' };
+        if (message?.type === 'TOP250_STATUS') {
+          response = {
+            ok: true,
+            movie: { total: 250, updatedAt: '2026-10-28' },
+            tv: { total: 250, updatedAt: '2026-10-11' },
+          };
+        }
+        if (message?.type === 'REFRESH_TOP250') {
+          response = {
+            ok: true,
+            charts: {
+              movie: { ok: true, total: 250, updatedAt: '2026-10-28', changed: false },
+              tv: { ok: true, total: 250, updatedAt: '2026-10-11', changed: false },
+            },
+          };
+        }
         setTimeout(() => callback(response), 60);
       },
     },

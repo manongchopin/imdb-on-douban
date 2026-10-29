@@ -9,6 +9,7 @@ import {
   parseChartHtml,
 } from '../src/lib/top250.js';
 import { TOP250 } from '../data/top250.js';
+import { TOP250_TV } from '../data/top250-tv.js';
 
 function chartHtml(edges) {
   const payload = { props: { pageProps: { pageData: { chartTitles: { edges } } } } };
@@ -102,4 +103,19 @@ test('内置快照里经典片的名次符合预期', () => {
   assert.equal(map.get('tt0068646'), 2); // 教父
   assert.equal(map.get('tt0468569'), 3); // 黑暗骑士
   assert.equal(map.has('tt0000000'), false);
+});
+
+test('剧集榜内置快照结构正确', () => {
+  assert.equal(isValidTop250(TOP250_TV.items), true);
+  assert.equal(TOP250_TV.items.length, 250);
+  assert.equal(TOP250_TV.items[0].rank, 1);
+  assert.equal(TOP250_TV.items[0].id, 'tt0903747'); // Breaking Bad
+  assert.equal(TOP250_TV.items[0].title, 'Breaking Bad');
+
+  const map = buildRankIndex(TOP250_TV.items);
+  assert.equal(map.get('tt0903747'), 1);
+  // 电影榜和剧集榜应该是两套 id，不重叠
+  const movieIds = new Set(TOP250.items.map((i) => i.id));
+  const overlap = TOP250_TV.items.filter((i) => movieIds.has(i.id));
+  assert.equal(overlap.length, 0, '两个榜不应有重叠条目');
 });

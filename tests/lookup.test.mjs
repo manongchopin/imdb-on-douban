@@ -15,6 +15,17 @@ const SEARCH_JSON = {
   ],
 };
 
+const BB_JSON = {
+  Response: 'True',
+  Title: 'Breaking Bad',
+  Year: '2008',
+  Type: 'series',
+  imdbRating: '9.5',
+  imdbVotes: '2,100,000',
+  imdbID: 'tt0903747',
+  Ratings: [],
+};
+
 const TITLE_JSON = {
   Response: 'True',
   Title: 'The Shawshank Redemption',
@@ -93,7 +104,9 @@ globalThis.fetch = async (url) => {
     ? SEARCH_JSON
     : params.get('i') === 'tt0111161'
       ? TITLE_JSON
-      : { Response: 'False', Error: 'Movie not found!' };
+      : params.get('i') === 'tt0903747'
+        ? BB_JSON
+        : { Response: 'False', Error: 'Movie not found!' };
   return {
     ok: true,
     status: 200,
@@ -184,11 +197,34 @@ test('REFRESH_TOP250 在两个数据源都拿不到时返回失败码', async ()
   assert.equal(res.code, 'TOP250_FAILED');
 });
 
-test('TOP250_STATUS 返回内置快照的日期和数量', async () => {
+test('TOP250_STATUS 返回两个榜的日期和数量', async () => {
   const res = await dispatch({ type: 'TOP250_STATUS' });
   assert.equal(res.ok, true);
-  assert.equal(res.total, 250);
-  assert.match(res.updatedAt, /^\d{4}-\d{2}-\d{2}$/);
+  assert.equal(res.movie.total, 250);
+  assert.equal(res.tv.total, 250);
+  assert.match(res.movie.updatedAt, /^\d{4}-\d{2}-\d{2}$/);
+  assert.match(res.tv.updatedAt, /^\d{4}-\d{2}-\d{2}$/);
+});
+
+test('剧集页查到的是 TV 榜名次', async () => {
+  // 前面的用例把设置改成了「无 Key 直连」，这里切回来
+  SETTINGS.apiKey = 'testkey';
+  SETTINGS.provider = 'omdb';
+
+  const res = await dispatch({
+    type: 'LOOKUP',
+    payload: {
+      doubanId: 'tv-0001',
+      titles: ['绝命毒师 第一季', 'Breaking Bad Season 1', 'Breaking Bad'],
+      year: '2008',
+      kind: 'series',
+      imdbId: 'tt0903747',
+    },
+  });
+  assert.equal(res.ok, true, JSON.stringify(res));
+  assert.equal(res.data.rating, 9.5);
+  assert.equal(res.data.top250.chart, 'tv');
+  assert.equal(res.data.top250.rank, 1);
 });
 
 test('Top 250 定时器会注册，并带有 20 小时节流', async () => {

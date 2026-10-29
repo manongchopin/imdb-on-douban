@@ -1,14 +1,16 @@
 #!/usr/bin/env node
 /**
- * 生成 data/top250.js（内置榜单快照）。
+ * 生成内置榜单快照：电影榜和剧集榜。
  *
- *   node tools/update-top250.mjs            # 直连 IMDb，失败时退回 Internet Archive
- *   node tools/update-top250.mjs --wayback  # 只用 Internet Archive
+ *   node tools/update-top250.mjs            # 两个榜都更新
+ *   node tools/update-top250.mjs --movie    # 只更新电影 Top 250
+ *   node tools/update-top250.mjs --tv       # 只更新剧集 Top 250
+ *   node tools/update-top250.mjs --wayback  # 跳过直连，只走 Internet Archive
  *
- * 之所以要有快照：IMDb 的榜单页有 AWS WAF，扩展在运行时不一定抓得到；
- * 内置一份快照才能做到「打开页面立刻显示名次」。
+ * 为什么要内置快照：IMDb 榜单页有 AWS WAF，扩展运行时不一定抓得到；
+ * 内置一份才能在打开页面时立刻显示名次。数据没变化时不写文件，避免空提交。
  */
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -16,29 +18,49 @@ import { parseChartHtml, compact, isValidTop250 } from '../src/lib/top250.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
-const OUT = join(root, 'data', 'top250.js');
 
 const UA =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36';
 
-async function fetchDirect() {
-  const res = await fetch('https://www.imdb.com/chart/top/', {
+const CHARTS = [
+  {
+    key: 'movie',
+    label: '电影 Top 250',
+    url: 'https://www.imdb.com/chart/top/',
+    out: join(root, 'data', 'top250.js'),
+    exportName: 'TOP250',
+  },
+  {
+    key: 'tv',
+    label: '剧集 Top 250',
+    url: 'https://www.imdb.com/chart/toptv/',
+    out: join(root, 'data', 'top250-tv.js'),
+    exportName: 'TOP250_TV',
+  },
+];
+
+const argv = process.argv.slice(2);
+const only = argv.includes('--movie') ? 'movie' : argv.includes('--tv') ? 'tv' : null;
+const onlyWayback = argv.includes('--wayback');
+
+async function fetchDirect(url) {
+  const res = await fetch(url, {
     headers: {
       'User-Agent': UA,
       Accept: 'text/html,application/xhtml+xml',
       'Accept-Language': 'en-US,en;q=0.9',
     },
   });
-  if (!res.ok) throw new Error(`IMDb 返回 ${res.status}`);
-  const html = await res.text();
-  const items = parseChartHtml(html);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const items = parseChartHtml(await res.text());
   if (!items) throw new Error('页面里没找到 __NEXT_DATA__（大概率被 WAF 挑战页替换了）');
   return { items, source: 'imdb.com' };
 }
 
-async function fetchWayback() {
+async function fetchWayback(url) {
+  const key = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
   const cdx = await fetch(
-    'http://web.archive.org/cdx/search/cdx?url=imdb.com/chart/top&output=json&limit=-1&filter=statuscode:200&fl=timestamp',
+    `https://web.archive.org/cdx/search/cdx?url=${encodeURIComponent(key)}&output=json&limit=-1&filter=statuscode:200&fl=timestamp`,
     { headers: { Accept: 'application/json' } }
   );
   if (!cdx.ok) throw new Error(`CDX 返回 ${cdx.status}`);
@@ -46,69 +68,81 @@ async function fetchWayback() {
   const timestamp = rows?.[1]?.[0];
   if (!timestamp) throw new Error('Internet Archive 上没有可用快照');
 
-  const res = await fetch(
-    `https://web.archive.org/web/${timestamp}id_/https://www.imdb.com/chart/top/`
-  );
+  const res = await fetch(`https://web.archive.org/web/${timestamp}id_/${url}`);
   if (!res.ok) throw new Error(`快照返回 ${res.status}`);
-  const html = await res.text();
-  const items = parseChartHtml(html);
+  const items = parseChartHtml(await res.text());
   if (!items) throw new Error('快照里没找到 __NEXT_DATA__');
   return { items, source: `web.archive.org @ ${timestamp}` };
 }
 
-const sources = process.argv.includes('--wayback')
-  ? [fetchWayback]
-  : [fetchDirect, fetchWayback];
-
-let result = null;
-for (const fn of sources) {
+async function readExisting(chart) {
+  if (!existsSync(chart.out)) return null;
   try {
-    console.log(`→ 尝试 ${fn.name} …`);
-    result = await fn();
-    break;
-  } catch (err) {
-    console.warn(`  ✗ ${err.message}`);
-  }
-}
-
-if (!result) {
-  console.error('所有数据源都失败了，保留原文件不动。');
-  process.exit(1);
-}
-
-if (!isValidTop250(result.items)) {
-  console.error(`数据校验没通过（${result.items.length} 条），不写入。`);
-  process.exit(1);
-}
-
-const payload = {
-  updatedAt: new Date().toISOString().slice(0, 10),
-  source: result.source,
-  total: result.items.length,
-  items: compact(result.items),
-};
-
-// 名次没变化就不动文件，免得每周产生一个空提交
-if (existsSync(OUT)) {
-  try {
-    const current = await import(`${pathToFileURL(OUT).href}?v=${Date.now()}`);
-    if (JSON.stringify(current.TOP250.items) === JSON.stringify(payload.items)) {
-      console.log('✓ 榜单和现有文件一致，保持不动。');
-      process.exit(0);
-    }
+    const mod = await import(`${pathToFileURL(chart.out).href}?v=${Date.now()}`);
+    return Array.isArray(mod[chart.exportName]?.items) ? mod[chart.exportName] : null;
   } catch {
-    /* 读不出来就照常覆盖 */
+    return null;
   }
 }
 
-const body = `/**
- * IMDb Top 250 内置快照 —— 由 tools/update-top250.mjs 生成，请勿手改。
+async function updateChart(chart) {
+  console.log(`\n== ${chart.label} (${chart.url})`);
+
+  const sources = onlyWayback ? [fetchWayback] : [fetchDirect, fetchWayback];
+  let result = null;
+  for (const fn of sources) {
+    try {
+      result = await fn(chart.url);
+      break;
+    } catch (err) {
+      console.warn(`  ✗ ${fn.name}: ${err.message}`);
+    }
+  }
+
+  if (!result) {
+    console.error('  所有数据源都失败了，保留原文件不动。');
+    return false;
+  }
+  if (!isValidTop250(result.items)) {
+    console.error(`  数据校验没通过（${result.items.length} 条），不写入。`);
+    return false;
+  }
+
+  const payload = {
+    updatedAt: new Date().toISOString().slice(0, 10),
+    source: result.source,
+    total: result.items.length,
+    items: compact(result.items),
+  };
+
+  const existing = await readExisting(chart);
+  if (existing && JSON.stringify(existing.items) === JSON.stringify(payload.items)) {
+    console.log(`  ✓ 和现有文件一致（${payload.total} 条），保持不动。`);
+    return true;
+  }
+
+  const body = `/**
+ * IMDb ${chart.label} 内置快照 —— 由 tools/update-top250.mjs 生成，请勿手改。
+ * 页面：${chart.url}
  * 生成时间：${payload.updatedAt}
  * 数据来源：${payload.source}
  */
-export const TOP250 = ${JSON.stringify(payload, null, 2)};
+export const ${chart.exportName} = ${JSON.stringify(payload, null, 2)};
 `;
+  writeFileSync(chart.out, body);
+  console.log(
+    `  ✓ 写入 ${chart.out.replace(root + '/', '')}：${payload.total} 条，来源 ${payload.source}`
+  );
+  console.log(
+    `    第 1 名 ${payload.items[0].title}，第 ${payload.total} 名 ${payload.items.at(-1).title}`
+  );
+  return true;
+}
 
-writeFileSync(OUT, body);
-console.log(`✓ 写入 data/top250.js：${payload.total} 条，来源 ${payload.source}`);
-console.log(`  第 1 名 ${payload.items[0].title}，第 ${payload.total} 名 ${payload.items.at(-1).title}`);
+let allOk = true;
+for (const chart of CHARTS) {
+  if (only && chart.key !== only) continue;
+  allOk = (await updateChart(chart)) && allOk;
+}
+
+process.exit(allOk ? 0 : 1);
