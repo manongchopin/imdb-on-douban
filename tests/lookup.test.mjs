@@ -15,6 +15,17 @@ const SEARCH_JSON = {
   ],
 };
 
+const FAREWELL_JSON = {
+  Response: 'True',
+  Title: 'Farewell My Concubine',
+  Year: '1993',
+  Type: 'movie',
+  imdbRating: '8.1',
+  imdbVotes: '37,943',
+  imdbID: 'tt0106332',
+  Ratings: [],
+};
+
 const BB_JSON = {
   Response: 'True',
   Title: 'Breaking Bad',
@@ -106,6 +117,8 @@ globalThis.fetch = async (url) => {
       ? TITLE_JSON
       : params.get('i') === 'tt0903747'
         ? BB_JSON
+        : params.get('i') === 'tt0106332'
+          ? FAREWELL_JSON
         : { Response: 'False', Error: 'Movie not found!' };
   return {
     ok: true,
@@ -204,6 +217,27 @@ test('TOP250_STATUS 返回两个榜的日期和数量', async () => {
   assert.equal(res.tv.total, 250);
   assert.match(res.movie.updatedAt, /^\d{4}-\d{2}-\d{2}$/);
   assert.match(res.tv.updatedAt, /^\d{4}-\d{2}-\d{2}$/);
+  assert.equal(res.chinese.total, 100);
+  assert.match(res.chinese.updatedAt, /^\d{4}-\d{2}-\d{2}$/);
+});
+
+test('华语片会挂上华语榜名次', async () => {
+  SETTINGS.apiKey = 'testkey';
+  SETTINGS.provider = 'omdb';
+
+  const res = await dispatch({
+    type: 'LOOKUP',
+    payload: {
+      doubanId: 'cn-0001',
+      titles: ['霸王别姬', 'Farewell My Concubine'],
+      year: '1993',
+      kind: 'movie',
+      imdbId: 'tt0106332',
+    },
+  });
+  assert.equal(res.ok, true, JSON.stringify(res));
+  assert.equal(res.data.chinese.rank, 4);
+  assert.equal(res.data.chinese.total, 100);
 });
 
 test('剧集页查到的是 TV 榜名次', async () => {

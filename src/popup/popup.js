@@ -190,6 +190,7 @@ async function renderStatus(settings) {
           d.top250.chart === 'tv' ? `TV Top 250 #${d.top250.rank}` : `Top 250 #${d.top250.rank}`
         );
       }
+      if (d.chinese && d.chinese.rank) parts.push(`华语 #${d.chinese.rank}`);
       sub.textContent = parts.filter(Boolean).join(' · ');
       break;
     }
@@ -234,9 +235,13 @@ async function renderTop250Date() {
     return;
   }
   const short = (value) => (value ? String(value).slice(5) : '—');
-  $('top250Date').textContent = `电影 ${short(res.movie.updatedAt)} · 剧集 ${short(
-    res.tv && res.tv.updatedAt
-  )}`;
+  $('top250Date').textContent = [
+    `电影 ${short(res.movie.updatedAt)}`,
+    `剧集 ${short(res.tv && res.tv.updatedAt)}`,
+    res.chinese ? `华语 ${short(res.chinese.updatedAt)}` : '',
+  ]
+    .filter(Boolean)
+    .join(' · ');
 }
 
 async function fetchSettings() {

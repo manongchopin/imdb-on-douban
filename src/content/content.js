@@ -266,8 +266,12 @@
     const votes = d.votes && prefs.showVotes ? `${formatVotes(d.votes)} 人评分` : '';
     const extras = (d.extras || []).filter((e) => e && e.short && prefs.showExtra !== false);
 
+    const cnRank = d.chinese && d.chinese.rank ? Number(d.chinese.rank) : 0;
     const meta = [
       votes ? `<span class="dbimdb-votes">${escapeHtml(votes)}</span>` : '',
+      cnRank
+        ? `<span class="dbimdb-chip dbimdb-chip-cn" title="IMDb 华语片 Top 100 第 ${cnRank} 名（本项目按评分加权计算，非 IMDb 官方榜）">华语 #${cnRank}</span>`
+        : '',
       ...extras.map(
         (e) =>
           `<span class="dbimdb-chip" title="${escapeHtml(e.source)}">${escapeHtml(e.label)} ${escapeHtml(

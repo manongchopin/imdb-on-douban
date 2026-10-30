@@ -4,13 +4,13 @@
   const TAB_STATE = {
     status: 'ok',
     data: {
-      imdbId: 'tt0111161',
-      rating: 9.3,
-      votes: 3258937,
-      top250: { rank: 1, total: 250, updatedAt: '2026-10-28' },
+      imdbId: 'tt0106332',
+      rating: 8.1,
+      votes: 37943,
+      chinese: { rank: 4, total: 100, updatedAt: '2026-10-30' },
     },
     message: '',
-    page: { title: '肖申克的救赎 The Shawshank Redemption', year: '1994', imdbId: 'tt0111161' },
+    page: { title: '霸王别姬 Farewell My Concubine', year: '1993', imdbId: 'tt0106332' },
   };
 
   window.chrome = {
@@ -28,6 +28,7 @@
             ok: true,
             movie: { total: 250, updatedAt: '2026-10-28' },
             tv: { total: 250, updatedAt: '2026-10-11' },
+            chinese: { total: 100, updatedAt: '2026-10-30' },
           };
         }
         if (message?.type === 'REFRESH_TOP250') {

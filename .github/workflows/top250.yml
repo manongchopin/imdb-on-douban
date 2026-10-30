@@ -19,17 +19,22 @@ jobs:
         with:
           node-version: 24
 
-      - name: 重新生成 Top 250 快照
+      - name: 重新生成 Top 250 快照（电影 + 剧集）
         run: node tools/update-top250.mjs
+
+      - name: 重建华语电影 Top 100
+        # IMDb 的 GraphQL 偶尔抽风，这一步失败不阻塞榜单更新
+        continue-on-error: true
+        run: node tools/build-chinese-top100.mjs
 
       - name: 有变化才提交
         run: |
-          if [ -z "$(git status --porcelain data/top250.js)" ]; then
+          if [ -z "$(git status --porcelain data/)" ]; then
             echo "榜单没有变化，跳过提交"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/top250.js
-          git commit -m "chore: 更新 IMDb Top 250 快照（电影 + 剧集）"
+          git add data/
+          git commit -m "chore: 更新 IMDb 榜单数据（Top 250 + 华语 Top 100）"
           git push

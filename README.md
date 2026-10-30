@@ -3,7 +3,7 @@
 [![test](https://github.com/manongchopin/imdb-on-douban/actions/workflows/test.yml/badge.svg)](https://github.com/manongchopin/imdb-on-douban/actions/workflows/test.yml)
 [![license](https://img.shields.io/badge/license-MIT-f5c518.svg)](LICENSE)
 
-在豆瓣电影页面右侧，紧挨着「豆瓣评分」显示这部电影的 **IMDb 评分**、投票数，以及它有没有进 **IMDb Top 250**——电影榜显示 `TOP 250 #1`，剧集榜显示 `TOP 250 TV #1`。
+在豆瓣电影页面右侧，紧挨着「豆瓣评分」显示这部电影的 **IMDb 评分**、投票数，以及它有没有进 **IMDb Top 250**——电影榜显示 `TOP 250 #1`，剧集榜显示 `TOP 250 TV #1`；华语片还会额外带上本项目计算的 `华语 #7`。
 
 ![豆瓣页面效果](docs/preview-card.png)
 
@@ -122,7 +122,38 @@ node tools/update-top250.mjs --wayback # 只用网络存档
 
 弹窗里会显示当前用的是哪天的数据（`Top 250 数据：2026-10-28`）。
 
-## 六、片名怎么对上 IMDb 的
+## 六、华语电影 Top 100（本项目自己算的榜）
+
+IMDb 没有「华语片榜」。这个榜是按规则算出来的，所以在卡片上只占一个低调的小胶囊 `华语 #7`，
+tooltip 里写明「本项目按评分加权计算，非 IMDb 官方榜」。
+
+**为什么不能直接按评分排**：IMDb 上有一大批只有个位数评分、却挂着 9.5+ 的冷门片。实测纯按评分取前 10，
+第 1 名是「9.7 分 / 6 个评分」。所以必须加票数门槛和加权。
+
+**实际规则**（`tools/build-chinese-top100.mjs`）：
+
+| 项 | 取值 |
+| --- | --- |
+| 语种 | IMDb 标记的主要语言属于 `cmn` / `yue` / `zh` / `nan` / `wuu` / `hak` |
+| 类型 | 只算电影（`movie`） |
+| 票数门槛 | ≥ 2000 |
+| 排序 | 贝叶斯加权分 `(v/(v+m))·R + (m/(v+m))·C`，m=2500，C=入池片子平均分 |
+| 数量 | 前 100 |
+
+当前这批数据：华语电影 22,421 部 → 过门槛 467 部 → 取前 100，平均分 C≈7.67。
+榜首是《活着》（8.3 / 22,811 票），前十还有《牯岭街少年杀人事件》《大红灯笼高高挂》《霸王别姬》《一一》。
+
+**更新**：
+
+```bash
+node tools/build-chinese-top100.mjs
+```
+
+每周的 GitHub Action 也会顺带重建（这一步失败不会让整条流水线变红，因为 IMDb 的 GraphQL 偶尔抽风）。
+
+**手动排除**：`tools/chinese-exclusions.json` 里填 tt id 就能把某部片踢出榜，改完重跑脚本。
+
+## 七、片名怎么对上 IMDb 的
 
 豆瓣的 `#info` 里通常直接写着 `IMDb: tt0111161`，这是**最可靠**的来源，有就直接用，零搜索、零误差。
 
@@ -140,7 +171,7 @@ node tools/update-top250.mjs --wayback # 只用网络存档
 
 ---
 
-## 七、目录结构
+## 八、目录结构
 
 ```
 imdb-on-douban/
@@ -148,7 +179,8 @@ imdb-on-douban/
 ├── manifest.json              # MV3 清单
 ├── data/
 │   ├── top250.js              # 电影 Top 250 内置快照（脚本生成，勿手改）
-│   └── top250-tv.js           # 剧集 Top 250 内置快照（脚本生成，勿手改）
+│   ├── top250-tv.js           # 剧集 Top 250 内置快照（脚本生成，勿手改）
+│   └── top100-chinese.js      # 华语电影 Top 100（脚本计算生成，勿手改）
 ├── src/
 │   ├── background.js          # Service Worker：消息路由 + 请求 + 缓存 + 徽标
 │   ├── lib/
@@ -172,10 +204,10 @@ imdb-on-douban/
 
 ---
 
-## 八、开发与测试
+## 九、开发与测试
 
 ```bash
-npm test          # 48 个用例：片名匹配、OMDb 解析、直连解析、缓存链路、manifest 完整性
+npm test          # 52 个用例：片名匹配、OMDb 解析、直连解析、缓存链路、manifest 完整性
 npm run icons     # 用本机 Chrome + sips 重新生成 4 个尺寸图标
 ```
 
@@ -197,28 +229,30 @@ node tools/preview/shoot.mjs \
 
 ---
 
-## 九、已知限制
+## 十、已知限制
 
 - **必须配一次 OMDb Key**：不配的话只能靠实验性的直连通道，成功率取决于你的网络和浏览器里有没有 IMDb 的 Cookie；
 - **OMDb 免费额度 1000 次/天**：靠缓存 + 去重扛住；如果超了，卡片会提示「额度用完」，第二天自动恢复；
 - **豆瓣改版**：选择器集中在 `content.js` 的 `readPage()` 里，改版了只需要改这一处；
 - **同一部片有多版**（如 1984 / 2021 两版《沙丘》）：靠年份 + 类型区分，年份差 3 年以上不会强行匹配；
+- **华语 Top 100 是「算出来的榜」**：规则（语种 / 门槛 / 加权）都写死在构建脚本里，换一套规则名次就会变；它反映的是 IMDb 用户口味，不是影评界共识
 - **两个 Top 250 名次都可能滞后几天**：默认用内置快照，点弹窗「更新」可拉最新；榜单尾部名次变化最频繁
 - **只在 `movie.douban.com/subject/<id>/` 这类主页生效**，`/photos`、`/comments` 等子页面会跳过。
 
-## 十、隐私
+## 十一、隐私
 
 - 只把**片名 / 年份 / IMDb id** 发给 `omdbapi.com`（直连模式下额外请求 `imdb.com`）；
 - 点「更新榜单」时才会访问 `imdb.com` 或 `web.archive.org`，平时不联网拉榜单；
+- 华语榜是构建时用 IMDb 的 GraphQL 算好写进代码的，**扩展运行时不调用**；
 - Key 存在 `chrome.storage.sync`（会同步到你的 Google 账号），插件不上传到任何第三方；
 - 无统计、无埋点、无远程脚本。
 
-## 十一、数据来源声明
+## 十二、数据来源声明
 
 IMDb 数据经 OMDb API 获取，仅供个人学习使用；商业用途请参考
 [IMDb 数据使用条款](https://help.imdb.com/article/imdb/general-information/can-i-use-imdb-data-in-my-software/G5JTRESSHJBBHTGX)。
 
-## 十二、关于
+## 十三、关于
 
 这是一个个人学习项目，由 **chopinfisher** 与 AI 编程助手协作完成：需求、交互、代码和测试都是边聊边做出来的。
 

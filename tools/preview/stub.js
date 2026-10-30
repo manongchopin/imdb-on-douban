@@ -7,6 +7,23 @@
   const params = new URLSearchParams(location.search);
   const kind = params.get('state') || 'ok';
 
+  // ?variant=cn：换成华语片（霸王别姬）的 DOM
+  if (params.get('variant') === 'cn') {
+    document.querySelector('[property="v:itemreviewed"]').textContent =
+      '霸王别姬 Farewell My Concubine';
+    document.querySelector('h1 .year').textContent = '(1993)';
+    document.querySelector('#info').innerHTML = `
+      <span><span class="pl">导演</span>: <span class="attrs"><a href="#">陈凯歌</a></span></span><br />
+      <span class="pl">主演</span>: <span class="attrs"><a href="#">张国荣</a> / <a href="#">张丰毅</a></span><br />
+      <span class="pl">类型:</span> 剧情 / 爱情 / 同性<br />
+      <span class="pl">制片国家/地区:</span> 中国大陆 / 中国香港<br />
+      <span class="pl">语言:</span> 汉语普通话<br />
+      <span class="pl">上映日期:</span> 1993-01-01(中国香港)<br />
+      <span class="pl">片长:</span> 171 分钟<br />
+      <span class="pl">又名:</span> 再见，我的妾 / Adieu ma concubine<br />
+      <span class="pl">IMDb:</span> tt0106332<br />`;
+  }
+
   // ?variant=tv：换成电视剧页面的 DOM（有「集数」、IMDb 是链接、没有「上映日期」）
   if (params.get('variant') === 'tv') {
     document.querySelector('[property="v:itemreviewed"]').textContent =
@@ -50,6 +67,20 @@
     error: { ok: false, code: 'NETWORK', message: '连不上 omdbapi.com，请检查网络或代理' },
     disabled: { ok: false, code: 'DISABLED' },
   };
+
+  if (params.get('variant') === 'cn') {
+    FIXTURES.ok.data = {
+      imdbId: 'tt0106332',
+      title: 'Farewell My Concubine',
+      year: '1993',
+      rating: 8.1,
+      votes: 37943,
+      url: 'https://www.imdb.com/title/tt0106332/',
+      extras: [],
+      source: 'OMDb',
+      chinese: { rank: 4, total: 100, updatedAt: '2026-10-30' },
+    };
+  }
 
   window.chrome = {
     runtime: {

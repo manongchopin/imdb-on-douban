@@ -1,0 +1,4 @@
+{
+  "_说明": "填 IMDb 的 tt id，把不想出现在「华语电影 Top 100」里的片子排除掉，改完重跑 tools/build-chinese-top100.mjs",
+  "ids": []
+}

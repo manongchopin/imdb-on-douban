@@ -171,3 +171,6 @@ try {
   chrome.kill('SIGKILL');
   rmSync(profile, { recursive: true, force: true });
 }
+
+// 有时候 Chrome 的 WebSocket 会让事件循环挂着不退出，显式收尾
+process.exit(0);

@@ -25,6 +25,7 @@ import { candidateImdbId, pickBest } from './lib/match.js';
 import { fetchDirectRating, parseSuggestion, IMDB_SUGGEST } from './lib/imdb-direct.js';
 import { TOP250 } from '../data/top250.js';
 import { TOP250_TV } from '../data/top250-tv.js';
+import { CHINESE_TOP100 } from '../data/top100-chinese.js';
 import { buildRankIndex, compact, isValidTop250, parseChartHtml } from './lib/top250.js';
 
 const TTL_RATING = 7 * 24 * 60 * 60 * 1000;
@@ -77,10 +78,12 @@ async function handleMessage(message, sender) {
     case 'TOP250_STATUS': {
       const movie = await getChartState('movie');
       const tv = await getChartState('tv');
+      const chinese = await getChineseState();
       return {
         ok: true,
         movie: { total: movie.total, updatedAt: movie.updatedAt },
         tv: { total: tv.total, updatedAt: tv.updatedAt },
+        chinese: { total: chinese.total, updatedAt: chinese.updatedAt },
       };
     }
     case 'CLEAR_CACHE': {
@@ -126,6 +129,9 @@ async function lookup(payload, sender) {
       result.prefs = { showVotes: settings.showVotes, showExtra: settings.showExtra };
       const ranking = await getTop250Rank(result.data?.imdbId, result.data?.type || payload.kind);
       if (ranking) result.data.top250 = ranking;
+
+      const chinese = await getChineseRank(result.data?.imdbId);
+      if (chinese) result.data.chinese = chinese;
     }
     if (sender?.tab?.id != null) updateBadge(sender.tab.id, result);
     return result;
@@ -321,6 +327,9 @@ const CHARTS = {
 
 const chartStates = new Map();
 
+/** 华语片 Top 100 的索引（本项目自己算的榜）。 */
+let chineseState = null;
+
 /** 运行时刷新过的数据优先，没有就用内置快照。 */
 async function readLiveCharts() {
   const live = await getCache('top250:live');
@@ -348,6 +357,31 @@ async function getChartState(chart) {
   const state = { chart, map: buildRankIndex(items), items, total: items.length, updatedAt };
   chartStates.set(chart, state);
   return state;
+}
+
+/** 华语榜：命中就返回名次。 */
+async function getChineseRank(imdbId) {
+  if (!imdbId) return null;
+  const state = await getChineseState();
+  const rank = state.map.get(imdbId);
+  if (!rank) return null;
+  return { rank, total: state.total, updatedAt: state.updatedAt };
+}
+
+async function getChineseState() {
+  if (chineseState) return chineseState;
+
+  let items = CHINESE_TOP100.items;
+  let updatedAt = CHINESE_TOP100.updatedAt;
+
+  const live = await getCache('chinese:top100');
+  if (live && Array.isArray(live.items) && live.items.length) {
+    items = live.items;
+    updatedAt = live.updatedAt || updatedAt;
+  }
+
+  chineseState = { map: buildRankIndex(items), items, total: items.length, updatedAt };
+  return chineseState;
 }
 
 /** 先查对应类型的榜，再兜底查另一个（豆瓣偶尔把剧标成电影）。 */

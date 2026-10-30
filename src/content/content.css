@@ -42,6 +42,13 @@
   letter-spacing: -0.5px;
 }
 
+#dbimdb-card .dbimdb-chip-cn {
+  border: 1px solid #e8cf7a;
+  background: #fff8dc;
+  color: #7a5b00;
+  font-weight: 600;
+}
+
 #dbimdb-card .dbimdb-top250 {
   flex: none;
   padding: 1px 6px;
@@ -64,7 +71,7 @@
 
 #dbimdb-card .dbimdb-votes {
   color: #999;
-  font-size: 11.5px;
+  font-size: 11px;
 }
 
 #dbimdb-card .dbimdb-title {
@@ -90,18 +97,18 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px 8px;
+  gap: 5px 6px;
   margin-top: 9px;
   padding-top: 9px;
   border-top: 1px dashed #efefef;
 }
 
 #dbimdb-card .dbimdb-chip {
-  padding: 1px 8px;
+  padding: 1px 7px;
   border-radius: 10px;
   background: #f7f7f7;
   color: #555;
-  font-size: 11px;
+  font-size: 10.5px;
   white-space: nowrap;
 }
 
