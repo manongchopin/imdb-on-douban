@@ -1,11 +1,12 @@
 /**
- * IMDb Top 250 内置快照 —— 由 tools/update-top250.mjs 生成，请勿手改。
- * 生成时间：2026-10-28
- * 数据来源：web.archive.org @ 20261024043036
+ * IMDb 电影 Top 250 内置快照 —— 由 tools/update-top250.mjs 生成，请勿手改。
+ * 页面：https://www.imdb.com/chart/top/
+ * 生成时间：2026-11-09
+ * 数据来源：web.archive.org @ 20261030083003
  */
 export const TOP250 = {
-  "updatedAt": "2026-10-28",
-  "source": "web.archive.org @ 20261024043036",
+  "updatedAt": "2026-11-09",
+  "source": "web.archive.org @ 20261030083003",
   "total": 250,
   "items": [
     {
@@ -352,15 +353,15 @@ export const TOP250 = {
     },
     {
       "rank": 58,
-      "id": "tt0209144",
-      "title": "Memento",
-      "year": 2000
-    },
-    {
-      "rank": 59,
       "id": "tt4154756",
       "title": "Avengers: Infinity War",
       "year": 2018
+    },
+    {
+      "rank": 59,
+      "id": "tt0209144",
+      "title": "Memento",
+      "year": 2000
     },
     {
       "rank": 60,
@@ -496,15 +497,15 @@ export const TOP250 = {
     },
     {
       "rank": 82,
-      "id": "tt0112573",
-      "title": "Braveheart",
-      "year": 1995
-    },
-    {
-      "rank": 83,
       "id": "tt0082096",
       "title": "Das Boot",
       "year": 1981
+    },
+    {
+      "rank": 83,
+      "id": "tt0112573",
+      "title": "Braveheart",
+      "year": 1995
     },
     {
       "rank": 84,
@@ -532,15 +533,15 @@ export const TOP250 = {
     },
     {
       "rank": 88,
-      "id": "tt8267604",
-      "title": "Capernaum",
-      "year": 2018
-    },
-    {
-      "rank": 89,
       "id": "tt33175825",
       "title": "Attack on Titan: The Last Attack",
       "year": 2024
+    },
+    {
+      "rank": 89,
+      "id": "tt8267604",
+      "title": "Capernaum",
+      "year": 2018
     },
     {
       "rank": 90,
@@ -700,27 +701,27 @@ export const TOP250 = {
     },
     {
       "rank": 116,
-      "id": "tt0056592",
-      "title": "To Kill a Mockingbird",
-      "year": 1962
-    },
-    {
-      "rank": 117,
       "id": "tt0097576",
       "title": "Indiana Jones and the Last Crusade",
       "year": 1989
     },
     {
-      "rank": 118,
-      "id": "tt0211915",
-      "title": "Amélie",
-      "year": 2001
+      "rank": 117,
+      "id": "tt0056592",
+      "title": "To Kill a Mockingbird",
+      "year": 1962
     },
     {
-      "rank": 119,
+      "rank": 118,
       "id": "tt0052357",
       "title": "Vertigo",
       "year": 1958
+    },
+    {
+      "rank": 119,
+      "id": "tt0211915",
+      "title": "Amélie",
+      "year": 2001
     },
     {
       "rank": 120,
@@ -814,15 +815,15 @@ export const TOP250 = {
     },
     {
       "rank": 135,
-      "id": "tt0058625",
-      "title": "Woman in the Dunes",
-      "year": 1964
-    },
-    {
-      "rank": 136,
       "id": "tt0107290",
       "title": "Jurassic Park",
       "year": 1993
+    },
+    {
+      "rank": 136,
+      "id": "tt0058625",
+      "title": "Woman in the Dunes",
+      "year": 1964
     },
     {
       "rank": 137,
@@ -982,15 +983,15 @@ export const TOP250 = {
     },
     {
       "rank": 163,
-      "id": "tt32820897",
-      "title": "Demon Slayer: Kimetsu No Yaiba Infinity Castle",
-      "year": 2025
-    },
-    {
-      "rank": 164,
       "id": "tt0055630",
       "title": "Yojimbo",
       "year": 1961
+    },
+    {
+      "rank": 164,
+      "id": "tt32820897",
+      "title": "Demon Slayer: Kimetsu No Yaiba Infinity Castle",
+      "year": 2025
     },
     {
       "rank": 165,
@@ -1180,15 +1181,15 @@ export const TOP250 = {
     },
     {
       "rank": 196,
-      "id": "tt0081398",
-      "title": "Raging Bull",
-      "year": 1980
-    },
-    {
-      "rank": 197,
       "id": "tt0892769",
       "title": "How to Train Your Dragon",
       "year": 2010
+    },
+    {
+      "rank": 197,
+      "id": "tt0081398",
+      "title": "Raging Bull",
+      "year": 1980
     },
     {
       "rank": 198,
@@ -1300,21 +1301,21 @@ export const TOP250 = {
     },
     {
       "rank": 216,
-      "id": "tt0077416",
-      "title": "The Deer Hunter",
-      "year": 1978
-    },
-    {
-      "rank": 217,
       "id": "tt0075148",
       "title": "Rocky",
       "year": 1976
     },
     {
-      "rank": 218,
+      "rank": 217,
       "id": "tt0046268",
       "title": "The Wages of Fear",
       "year": 1953
+    },
+    {
+      "rank": 218,
+      "id": "tt0077416",
+      "title": "The Deer Hunter",
+      "year": 1978
     },
     {
       "rank": 219,
@@ -1342,27 +1343,27 @@ export const TOP250 = {
     },
     {
       "rank": 223,
-      "id": "tt0113247",
-      "title": "La haine",
-      "year": 1995
-    },
-    {
-      "rank": 224,
       "id": "tt0059742",
       "title": "The Sound of Music",
       "year": 1965
     },
     {
-      "rank": 225,
-      "id": "tt1895587",
-      "title": "Spotlight",
-      "year": 2015
+      "rank": 224,
+      "id": "tt0113247",
+      "title": "La haine",
+      "year": 1995
     },
     {
-      "rank": 226,
+      "rank": 225,
       "id": "tt15097216",
       "title": "Jai Bhim",
       "year": 2021
+    },
+    {
+      "rank": 226,
+      "id": "tt1895587",
+      "title": "Spotlight",
+      "year": 2015
     },
     {
       "rank": 227,
@@ -1504,9 +1505,9 @@ export const TOP250 = {
     },
     {
       "rank": 250,
-      "id": "tt10431500",
-      "title": "Miracle in Cell No. 7",
-      "year": 2019
+      "id": "tt0077711",
+      "title": "Autumn Sonata",
+      "year": 1978
     }
   ]
 };
