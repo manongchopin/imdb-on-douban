@@ -1,12 +1,12 @@
 /**
  * IMDb 电影 Top 250 内置快照 —— 由 tools/update-top250.mjs 生成，请勿手改。
  * 页面：https://www.imdb.com/chart/top/
- * 生成时间：2026-11-09
- * 数据来源：web.archive.org @ 20261030083003
+ * 生成时间：2026-11-16
+ * 数据来源：web.archive.org @ 20261109035943
  */
 export const TOP250 = {
-  "updatedAt": "2026-11-09",
-  "source": "web.archive.org @ 20261030083003",
+  "updatedAt": "2026-11-16",
+  "source": "web.archive.org @ 20261109035943",
   "total": 250,
   "items": [
     {
@@ -389,21 +389,21 @@ export const TOP250 = {
     },
     {
       "rank": 64,
-      "id": "tt33764258",
-      "title": "The Odyssey",
-      "year": 2026
-    },
-    {
-      "rank": 65,
       "id": "tt0043014",
       "title": "Sunset Boulevard",
       "year": 1950
     },
     {
-      "rank": 66,
+      "rank": 65,
       "id": "tt0051201",
       "title": "Witness for the Prosecution",
       "year": 1957
+    },
+    {
+      "rank": 66,
+      "id": "tt33764258",
+      "title": "The Odyssey",
+      "year": 2026
     },
     {
       "rank": 67,
@@ -497,15 +497,15 @@ export const TOP250 = {
     },
     {
       "rank": 82,
-      "id": "tt0082096",
-      "title": "Das Boot",
-      "year": 1981
-    },
-    {
-      "rank": 83,
       "id": "tt0112573",
       "title": "Braveheart",
       "year": 1995
+    },
+    {
+      "rank": 83,
+      "id": "tt0082096",
+      "title": "Das Boot",
+      "year": 1981
     },
     {
       "rank": 84,
@@ -527,15 +527,15 @@ export const TOP250 = {
     },
     {
       "rank": 87,
-      "id": "tt0169547",
-      "title": "American Beauty",
-      "year": 1999
-    },
-    {
-      "rank": 88,
       "id": "tt33175825",
       "title": "Attack on Titan: The Last Attack",
       "year": 2024
+    },
+    {
+      "rank": 88,
+      "id": "tt0169547",
+      "title": "American Beauty",
+      "year": 1999
     },
     {
       "rank": 89,
@@ -713,21 +713,21 @@ export const TOP250 = {
     },
     {
       "rank": 118,
-      "id": "tt0052357",
-      "title": "Vertigo",
-      "year": 1958
-    },
-    {
-      "rank": 119,
       "id": "tt0211915",
       "title": "Amélie",
       "year": 2001
     },
     {
-      "rank": 120,
+      "rank": 119,
       "id": "tt0033467",
       "title": "Citizen Kane",
       "year": 1941
+    },
+    {
+      "rank": 120,
+      "id": "tt0052357",
+      "title": "Vertigo",
+      "year": 1958
     },
     {
       "rank": 121,
@@ -845,15 +845,15 @@ export const TOP250 = {
     },
     {
       "rank": 140,
-      "id": "tt8503618",
-      "title": "Hamilton",
-      "year": 2020
-    },
-    {
-      "rank": 141,
       "id": "tt0469494",
       "title": "There Will Be Blood",
       "year": 2007
+    },
+    {
+      "rank": 141,
+      "id": "tt8503618",
+      "title": "Hamilton",
+      "year": 2020
     },
     {
       "rank": 142,
@@ -881,15 +881,15 @@ export const TOP250 = {
     },
     {
       "rank": 146,
-      "id": "tt0012349",
-      "title": "The Kid",
-      "year": 1921
-    },
-    {
-      "rank": 147,
       "id": "tt0042192",
       "title": "All About Eve",
       "year": 1950
+    },
+    {
+      "rank": 147,
+      "id": "tt0012349",
+      "title": "The Kid",
+      "year": 1921
     },
     {
       "rank": 148,
@@ -989,15 +989,15 @@ export const TOP250 = {
     },
     {
       "rank": 164,
-      "id": "tt32820897",
-      "title": "Demon Slayer: Kimetsu No Yaiba Infinity Castle",
-      "year": 2025
-    },
-    {
-      "rank": 165,
       "id": "tt0080678",
       "title": "The Elephant Man",
       "year": 1980
+    },
+    {
+      "rank": 165,
+      "id": "tt32820897",
+      "title": "Demon Slayer: Kimetsu No Yaiba Infinity Castle",
+      "year": 2025
     },
     {
       "rank": 166,
@@ -1073,15 +1073,15 @@ export const TOP250 = {
     },
     {
       "rank": 178,
-      "id": "tt0117951",
-      "title": "Trainspotting",
-      "year": 1996
-    },
-    {
-      "rank": 179,
       "id": "tt1201607",
       "title": "Harry Potter and the Deathly Hallows: Part 2",
       "year": 2011
+    },
+    {
+      "rank": 179,
+      "id": "tt0117951",
+      "title": "Trainspotting",
+      "year": 1996
     },
     {
       "rank": 180,
@@ -1151,15 +1151,15 @@ export const TOP250 = {
     },
     {
       "rank": 191,
-      "id": "tt0116282",
-      "title": "Fargo",
-      "year": 1996
-    },
-    {
-      "rank": 192,
       "id": "tt0118849",
       "title": "Children of Heaven",
       "year": 1997
+    },
+    {
+      "rank": 192,
+      "id": "tt0116282",
+      "title": "Fargo",
+      "year": 1996
     },
     {
       "rank": 193,
@@ -1205,15 +1205,15 @@ export const TOP250 = {
     },
     {
       "rank": 200,
-      "id": "tt0112471",
-      "title": "Before Sunrise",
-      "year": 1995
-    },
-    {
-      "rank": 201,
       "id": "tt0198781",
       "title": "Monsters, Inc.",
       "year": 2001
+    },
+    {
+      "rank": 201,
+      "id": "tt0112471",
+      "title": "Before Sunrise",
+      "year": 1995
     },
     {
       "rank": 202,
@@ -1241,15 +1241,15 @@ export const TOP250 = {
     },
     {
       "rank": 206,
-      "id": "tt0107207",
-      "title": "In the Name of the Father",
-      "year": 1993
-    },
-    {
-      "rank": 207,
       "id": "tt30472557",
       "title": "Chainsaw Man - The Movie: Reze Arc",
       "year": 2025
+    },
+    {
+      "rank": 207,
+      "id": "tt0107207",
+      "title": "In the Name of the Father",
+      "year": 1993
     },
     {
       "rank": 208,
@@ -1343,21 +1343,21 @@ export const TOP250 = {
     },
     {
       "rank": 223,
+      "id": "tt15097216",
+      "title": "Jai Bhim",
+      "year": 2021
+    },
+    {
+      "rank": 224,
       "id": "tt0059742",
       "title": "The Sound of Music",
       "year": 1965
     },
     {
-      "rank": 224,
+      "rank": 225,
       "id": "tt0113247",
       "title": "La haine",
       "year": 1995
-    },
-    {
-      "rank": 225,
-      "id": "tt15097216",
-      "title": "Jai Bhim",
-      "year": 2021
     },
     {
       "rank": 226,
@@ -1397,15 +1397,15 @@ export const TOP250 = {
     },
     {
       "rank": 232,
-      "id": "tt0118715",
-      "title": "The Big Lebowski",
-      "year": 1998
-    },
-    {
-      "rank": 233,
       "id": "tt0317705",
       "title": "The Incredibles",
       "year": 2004
+    },
+    {
+      "rank": 233,
+      "id": "tt0118715",
+      "title": "The Big Lebowski",
+      "year": 1998
     },
     {
       "rank": 234,
@@ -1487,15 +1487,15 @@ export const TOP250 = {
     },
     {
       "rank": 247,
-      "id": "tt0019254",
-      "title": "The Passion of Joan of Arc",
-      "year": 1928
-    },
-    {
-      "rank": 248,
       "id": "tt4430212",
       "title": "Drishyam",
       "year": 2015
+    },
+    {
+      "rank": 248,
+      "id": "tt0019254",
+      "title": "The Passion of Joan of Arc",
+      "year": 1928
     },
     {
       "rank": 249,
@@ -1505,9 +1505,9 @@ export const TOP250 = {
     },
     {
       "rank": 250,
-      "id": "tt0077711",
-      "title": "Autumn Sonata",
-      "year": 1978
+      "id": "tt10431500",
+      "title": "Miracle in Cell No. 7",
+      "year": 2019
     }
   ]
 };

@@ -1,12 +1,12 @@
 /**
  * IMDb 剧集 Top 250 内置快照 —— 由 tools/update-top250.mjs 生成，请勿手改。
  * 页面：https://www.imdb.com/chart/toptv/
- * 生成时间：2026-11-09
- * 数据来源：web.archive.org @ 20261030083008
+ * 生成时间：2026-11-16
+ * 数据来源：web.archive.org @ 20261110011041
  */
 export const TOP250_TV = {
-  "updatedAt": "2026-11-09",
-  "source": "web.archive.org @ 20261030083008",
+  "updatedAt": "2026-11-16",
+  "source": "web.archive.org @ 20261110011041",
   "total": 250,
   "items": [
     {
@@ -287,14 +287,14 @@ export const TOP250_TV = {
     },
     {
       "rank": 47,
-      "id": "tt0092337",
-      "title": "Dekalog",
+      "id": "tt0098904",
+      "title": "Seinfeld",
       "year": 1989
     },
     {
       "rank": 48,
-      "id": "tt0098904",
-      "title": "Seinfeld",
+      "id": "tt0092337",
+      "title": "Dekalog",
       "year": 1989
     },
     {
@@ -323,15 +323,15 @@ export const TOP250_TV = {
     },
     {
       "rank": 53,
-      "id": "tt7920978",
-      "title": "Persona",
-      "year": 2018
-    },
-    {
-      "rank": 54,
       "id": "tt5622316",
       "title": "The Chosen",
       "year": 2017
+    },
+    {
+      "rank": 54,
+      "id": "tt7920978",
+      "title": "Persona",
+      "year": 2018
     },
     {
       "rank": 55,
@@ -359,21 +359,21 @@ export const TOP250_TV = {
     },
     {
       "rank": 59,
-      "id": "tt14986406",
-      "title": "Bleach: Thousand-Year Blood War",
-      "year": 2022
-    },
-    {
-      "rank": 60,
       "id": "tt0108778",
       "title": "Friends",
       "year": 1994
     },
     {
-      "rank": 61,
+      "rank": 60,
       "id": "tt7137906",
       "title": "When They See Us",
       "year": 2019
+    },
+    {
+      "rank": 61,
+      "id": "tt14986406",
+      "title": "Bleach: Thousand-Year Blood War",
+      "year": 2022
     },
     {
       "rank": 62,
@@ -395,15 +395,15 @@ export const TOP250_TV = {
     },
     {
       "rank": 65,
-      "id": "tt3530232",
-      "title": "Last Week Tonight with John Oliver",
-      "year": 2014
-    },
-    {
-      "rank": 66,
       "id": "tt7660850",
       "title": "Succession",
       "year": 2018
+    },
+    {
+      "rank": 66,
+      "id": "tt3530232",
+      "title": "Last Week Tonight with John Oliver",
+      "year": 2014
     },
     {
       "rank": 67,
@@ -413,15 +413,15 @@ export const TOP250_TV = {
     },
     {
       "rank": 68,
-      "id": "tt12004706",
-      "title": "Panchayat",
-      "year": 2020
-    },
-    {
-      "rank": 69,
       "id": "tt0264235",
       "title": "Curb Your Enthusiasm",
       "year": 2000
+    },
+    {
+      "rank": 69,
+      "id": "tt12004706",
+      "title": "Panchayat",
+      "year": 2020
     },
     {
       "rank": 70,
@@ -443,15 +443,15 @@ export const TOP250_TV = {
     },
     {
       "rank": 73,
-      "id": "tt10530900",
-      "title": "Gullak",
-      "year": 2019
-    },
-    {
-      "rank": 74,
       "id": "tt0214341",
       "title": "Dragon Ball Z",
       "year": 1996
+    },
+    {
+      "rank": 74,
+      "id": "tt10530900",
+      "title": "Gullak",
+      "year": 2019
     },
     {
       "rank": 75,
@@ -515,21 +515,21 @@ export const TOP250_TV = {
     },
     {
       "rank": 85,
-      "id": "tt9432978",
-      "title": "Kota Factory",
-      "year": 2019
-    },
-    {
-      "rank": 86,
       "id": "tt0121955",
       "title": "South Park",
       "year": 1997
     },
     {
-      "rank": 87,
+      "rank": 86,
       "id": "tt0318871",
       "title": "Berserk",
       "year": 1997
+    },
+    {
+      "rank": 87,
+      "id": "tt9432978",
+      "title": "Kota Factory",
+      "year": 2019
     },
     {
       "rank": 88,
@@ -539,15 +539,15 @@ export const TOP250_TV = {
     },
     {
       "rank": 89,
-      "id": "tt3718778",
-      "title": "Over the Garden Wall",
-      "year": 2014
-    },
-    {
-      "rank": 90,
       "id": "tt7923710",
       "title": "My Mister",
       "year": 2018
+    },
+    {
+      "rank": 90,
+      "id": "tt3718778",
+      "title": "Over the Garden Wall",
+      "year": 2014
     },
     {
       "rank": 91,
@@ -593,15 +593,15 @@ export const TOP250_TV = {
     },
     {
       "rank": 98,
-      "id": "tt0118421",
-      "title": "Oz",
-      "year": 1997
-    },
-    {
-      "rank": 99,
       "id": "tt0988824",
       "title": "Naruto: Shippuden",
       "year": 2007
+    },
+    {
+      "rank": 99,
+      "id": "tt0118421",
+      "title": "Oz",
+      "year": 1997
     },
     {
       "rank": 100,
@@ -641,21 +641,21 @@ export const TOP250_TV = {
     },
     {
       "rank": 106,
+      "id": "tt38268282",
+      "title": "Steel Ball Run: JoJo's Bizarre Adventure",
+      "year": 2026
+    },
+    {
+      "rank": 107,
       "id": "tt0092455",
       "title": "Star Trek: The Next Generation",
       "year": 1987
     },
     {
-      "rank": 107,
+      "rank": 108,
       "id": "tt0804503",
       "title": "Mad Men",
       "year": 2007
-    },
-    {
-      "rank": 108,
-      "id": "tt16026746",
-      "title": "X-Men '97",
-      "year": 2024
     },
     {
       "rank": 109,
@@ -665,9 +665,9 @@ export const TOP250_TV = {
     },
     {
       "rank": 110,
-      "id": "tt38268282",
-      "title": "Steel Ball Run: JoJo's Bizarre Adventure",
-      "year": 2026
+      "id": "tt16026746",
+      "title": "X-Men '97",
+      "year": 2024
     },
     {
       "rank": 111,
@@ -713,21 +713,21 @@ export const TOP250_TV = {
     },
     {
       "rank": 118,
-      "id": "tt2303687",
-      "title": "Line of Duty",
-      "year": 2012
-    },
-    {
-      "rank": 119,
       "id": "tt0994314",
       "title": "Code Geass: Lelouch of the Rebellion",
       "year": 2006
     },
     {
-      "rank": 120,
+      "rank": 119,
       "id": "tt0481256",
       "title": "Fighting Spirit",
       "year": 2000
+    },
+    {
+      "rank": 120,
+      "id": "tt2303687",
+      "title": "Line of Duty",
+      "year": 2012
     },
     {
       "rank": 121,
@@ -737,21 +737,21 @@ export const TOP250_TV = {
     },
     {
       "rank": 122,
+      "id": "tt0268093",
+      "title": "Ramayan",
+      "year": 1987
+    },
+    {
+      "rank": 123,
       "id": "tt0062588",
       "title": "Mister Rogers' Neighborhood",
       "year": 1968
     },
     {
-      "rank": 123,
+      "rank": 124,
       "id": "tt0758745",
       "title": "Friday Night Lights",
       "year": 2006
-    },
-    {
-      "rank": 124,
-      "id": "tt0268093",
-      "title": "Ramayan",
-      "year": 1987
     },
     {
       "rank": 125,
@@ -761,15 +761,15 @@ export const TOP250_TV = {
     },
     {
       "rank": 126,
-      "id": "tt1305826",
-      "title": "Adventure Time",
-      "year": 2010
-    },
-    {
-      "rank": 127,
       "id": "tt7472896",
       "title": "Mr Inbetween",
       "year": 2018
+    },
+    {
+      "rank": 127,
+      "id": "tt1305826",
+      "title": "Adventure Time",
+      "year": 2010
     },
     {
       "rank": 128,
@@ -839,15 +839,15 @@ export const TOP250_TV = {
     },
     {
       "rank": 139,
-      "id": "tt13991232",
-      "title": "1883",
-      "year": 2021
-    },
-    {
-      "rank": 140,
       "id": "tt30263074",
       "title": "Sapne Vs Everyone",
       "year": 2023
+    },
+    {
+      "rank": 140,
+      "id": "tt13991232",
+      "title": "1883",
+      "year": 2021
     },
     {
       "rank": 141,
@@ -857,14 +857,14 @@ export const TOP250_TV = {
     },
     {
       "rank": 142,
-      "id": "tt0348914",
-      "title": "Deadwood",
+      "id": "tt1518542",
+      "title": "Sarabhai V/S Sarabhai",
       "year": 2004
     },
     {
       "rank": 143,
-      "id": "tt1518542",
-      "title": "Sarabhai V/S Sarabhai",
+      "id": "tt0348914",
+      "title": "Deadwood",
       "year": 2004
     },
     {
@@ -899,15 +899,15 @@ export const TOP250_TV = {
     },
     {
       "rank": 149,
-      "id": "tt5290382",
-      "title": "Mindhunter",
-      "year": 2017
-    },
-    {
-      "rank": 150,
       "id": "tt1733785",
       "title": "The Bridge",
       "year": 2011
+    },
+    {
+      "rank": 150,
+      "id": "tt5290382",
+      "title": "Mindhunter",
+      "year": 2017
     },
     {
       "rank": 151,
@@ -953,21 +953,21 @@ export const TOP250_TV = {
     },
     {
       "rank": 158,
+      "id": "tt9253284",
+      "title": "Andor",
+      "year": 2022
+    },
+    {
+      "rank": 159,
       "id": "tt0229889",
       "title": "El Chavo",
       "year": 1972
     },
     {
-      "rank": 159,
+      "rank": 160,
       "id": "tt10850932",
       "title": "Crash Landing on You",
       "year": 2019
-    },
-    {
-      "rank": 160,
-      "id": "tt9253284",
-      "title": "Andor",
-      "year": 2022
     },
     {
       "rank": 161,
@@ -983,27 +983,27 @@ export const TOP250_TV = {
     },
     {
       "rank": 163,
-      "id": "tt2788316",
-      "title": "Shōgun",
-      "year": 2024
-    },
-    {
-      "rank": 164,
       "id": "tt13111040",
       "title": "The Offer",
       "year": 2022
     },
     {
-      "rank": 165,
-      "id": "tt7562112",
-      "title": "Pose",
-      "year": 2018
+      "rank": 164,
+      "id": "tt2788316",
+      "title": "Shōgun",
+      "year": 2024
     },
     {
-      "rank": 166,
+      "rank": 165,
       "id": "tt9103932",
       "title": "Greatest Events of WWII in Colour",
       "year": 2019
+    },
+    {
+      "rank": 166,
+      "id": "tt7562112",
+      "title": "Pose",
+      "year": 2018
     },
     {
       "rank": 167,
@@ -1031,15 +1031,15 @@ export const TOP250_TV = {
     },
     {
       "rank": 171,
-      "id": "tt4299972",
-      "title": "The Jinx: The Life and Deaths of Robert Durst",
-      "year": 2015
-    },
-    {
-      "rank": 172,
       "id": "tt1870479",
       "title": "The Newsroom",
       "year": 2012
+    },
+    {
+      "rank": 172,
+      "id": "tt4299972",
+      "title": "The Jinx: The Life and Deaths of Robert Durst",
+      "year": 2015
     },
     {
       "rank": 173,
@@ -1097,15 +1097,15 @@ export const TOP250_TV = {
     },
     {
       "rank": 182,
-      "id": "tt0094517",
-      "title": "Mystery Science Theater 3000",
-      "year": 1988
-    },
-    {
-      "rank": 183,
       "id": "tt2063241",
       "title": "Farouk Omar",
       "year": 2012
+    },
+    {
+      "rank": 183,
+      "id": "tt0094517",
+      "title": "Mystery Science Theater 3000",
+      "year": 1988
     },
     {
       "rank": 184,
@@ -1187,27 +1187,27 @@ export const TOP250_TV = {
     },
     {
       "rank": 197,
+      "id": "tt10802170",
+      "title": "The Rehearsal",
+      "year": 2022
+    },
+    {
+      "rank": 198,
       "id": "tt0423731",
       "title": "Samurai Champloo",
       "year": 2004
     },
     {
-      "rank": 198,
+      "rank": 199,
       "id": "tt1641384",
       "title": "Young Justice",
       "year": 2010
     },
     {
-      "rank": 199,
+      "rank": 200,
       "id": "tt0280249",
       "title": "Dragon Ball",
       "year": 1995
-    },
-    {
-      "rank": 200,
-      "id": "tt6763664",
-      "title": "The Haunting of Hill House",
-      "year": 2018
     },
     {
       "rank": 201,
@@ -1217,27 +1217,27 @@ export const TOP250_TV = {
     },
     {
       "rank": 202,
+      "id": "tt6763664",
+      "title": "The Haunting of Hill House",
+      "year": 2018
+    },
+    {
+      "rank": 203,
       "id": "tt9335498",
       "title": "Demon Slayer: Kimetsu no Yaiba",
       "year": 2019
     },
     {
-      "rank": 203,
+      "rank": 204,
       "id": "tt13868972",
       "title": "Rocket Boys",
       "year": 2022
     },
     {
-      "rank": 204,
+      "rank": 205,
       "id": "tt0487831",
       "title": "The IT Crowd",
       "year": 2006
-    },
-    {
-      "rank": 205,
-      "id": "tt10802170",
-      "title": "The Rehearsal",
-      "year": 2022
     },
     {
       "rank": 206,
@@ -1313,15 +1313,15 @@ export const TOP250_TV = {
     },
     {
       "rank": 218,
-      "id": "tt0403778",
-      "title": "Long Way Round",
-      "year": 2004
-    },
-    {
-      "rank": 219,
       "id": "tt20859920",
       "title": "Alchemy of Souls",
       "year": 2022
+    },
+    {
+      "rank": 219,
+      "id": "tt0403778",
+      "title": "Long Way Round",
+      "year": 2004
     },
     {
       "rank": 220,
@@ -1361,9 +1361,9 @@ export const TOP250_TV = {
     },
     {
       "rank": 226,
-      "id": "tt0988818",
-      "title": "Gintama",
-      "year": 2005
+      "id": "tt0163507",
+      "title": "Whose Line Is It Anyway?",
+      "year": 1998
     },
     {
       "rank": 227,
@@ -1373,9 +1373,9 @@ export const TOP250_TV = {
     },
     {
       "rank": 228,
-      "id": "tt0163507",
-      "title": "Whose Line Is It Anyway?",
-      "year": 1998
+      "id": "tt0988818",
+      "title": "Gintama",
+      "year": 2005
     },
     {
       "rank": 229,
@@ -1397,15 +1397,15 @@ export const TOP250_TV = {
     },
     {
       "rank": 232,
-      "id": "tt1190634",
-      "title": "The Boys",
-      "year": 2019
-    },
-    {
-      "rank": 233,
       "id": "tt27446493",
       "title": "Twinkling Watermelon",
       "year": 2023
+    },
+    {
+      "rank": 233,
+      "id": "tt1190634",
+      "title": "The Boys",
+      "year": 2019
     },
     {
       "rank": 234,
@@ -1451,63 +1451,63 @@ export const TOP250_TV = {
     },
     {
       "rank": 241,
-      "id": "tt4236770",
-      "title": "Yellowstone",
-      "year": 2018
-    },
-    {
-      "rank": 242,
       "id": "tt1877368",
       "title": "The Great British Baking Show",
       "year": 2010
     },
     {
-      "rank": 243,
-      "id": "tt0118273",
-      "title": "Brass Eye",
-      "year": 1997
+      "rank": 242,
+      "id": "tt4236770",
+      "title": "Yellowstone",
+      "year": 2018
     },
     {
-      "rank": 244,
+      "rank": 243,
       "id": "tt26743760",
       "title": "The Apothecary Diaries",
       "year": 2023
     },
     {
-      "rank": 245,
-      "id": "tt3230854",
-      "title": "The Expanse",
-      "year": 2015
+      "rank": 244,
+      "id": "tt0118273",
+      "title": "Brass Eye",
+      "year": 1997
     },
     {
-      "rank": 246,
+      "rank": 245,
       "id": "tt0373732",
       "title": "The Boondocks",
       "year": 2005
     },
     {
+      "rank": 246,
+      "id": "tt3230854",
+      "title": "The Expanse",
+      "year": 2015
+    },
+    {
       "rank": 247,
-      "id": "tt2244495",
-      "title": "The Eric Andre Show",
-      "year": 2012
-    },
-    {
-      "rank": 248,
-      "id": "tt2359704",
-      "title": "JoJo's Bizarre Adventure",
-      "year": 2012
-    },
-    {
-      "rank": 249,
       "id": "tt12074628",
       "title": "Smiling Friends",
       "year": 2020
     },
     {
+      "rank": 248,
+      "id": "tt2244495",
+      "title": "The Eric Andre Show",
+      "year": 2012
+    },
+    {
+      "rank": 249,
+      "id": "tt0310455",
+      "title": "Foyle's War",
+      "year": 2002
+    },
+    {
       "rank": 250,
-      "id": "tt2575988",
-      "title": "Silicon Valley",
-      "year": 2014
+      "id": "tt1983079",
+      "title": "Call the Midwife",
+      "year": 2012
     }
   ]
 };
